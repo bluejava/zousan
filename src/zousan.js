@@ -13,14 +13,21 @@
 		// passing context and arguments, in exchange for a 25x speed increase. (Use anon function to pass context/args)
 		var soon = (function() {
 
-				var fq = []; // function queue;
+				var	fq = [], // function queue;
+					fqStart = 0; // avoid using shift() by maintaining a start pointer - and remove items in chunks of 1024
 
 				function callQueue()
 				{
-					while(fq.length) // this approach allows new yields to pile on during the execution of these
+					while(fq.length - fqStart) // this approach allows new yields to pile on during the execution of these
 					{
-						fq[0](); // no context or args..
-						fq.shift(); // remove element just processed... do this after processing so we don't go 0 and trigger soon again
+						fq[fqStart](); // no context or args..
+						fqStart++;
+						if(fqStart > 1024)
+						{
+							fq.splice(0,fqStart);
+							fqStart = 0;
+						}
+						//fq.shift(); // remove element just processed... do this after processing so we don't go 0 and trigger soon again
 					}
 				}
 
@@ -53,7 +60,7 @@
 						// push the function and any remaining arguments along with context
 						fq.push(fn);
 
-						if(fq.length == 1) // upon adding our first entry, kick off the callback
+						if((fq.length - fqStart) == 1) // upon adding our first entry, kick off the callback
 							cqYield();
 					};
 

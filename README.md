@@ -33,4 +33,13 @@ Because elephants never forget. So you can depend on them to keep their promises
 
 **Q: Just how fast is it?**
 
-It is very very fast. I will put together a perf test to demonstrate this soon.
+I set up a [jsperf comparison](http://jsperf.com/promise-speed-comparison/2) between:
+
+* [Zousan](https://github.com/bluejava/zousan) (2,117 bytes minified)
+* [Bluebird](https://github.com/petkaantonov/bluebird) (72,282 bytes minified) - Considered the king of high-performance Promises 
+* [When](https://github.com/cujojs/when) (12,474 bytes minified) - An extremely popular and highly performant Promises implementation
+* Native Promises - Built into all recent browsers *except IE*.
+
+**Note: Graph illustrates *operations per second*, so longer bars are better.**
+
+![](http://www.bluejava.com/int/images/Zousan-Performance.png)
