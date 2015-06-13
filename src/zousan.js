@@ -1,6 +1,6 @@
 // zousan - An absolutely Lightning Fast, Yet Very Small Promise A+ Compliant Promise
 // https://github.com/bluejava/zousan
-// Version 1.0.0
+// Version 1.0.2
 
 (function(global){
 
@@ -71,7 +71,7 @@
 			})();
 
 		var
-			STATE_PENDING = "pending",			// These are the three possible states
+			STATE_PENDING = undefined,			// These are the three possible states
 			STATE_FULFILLED = "fulfilled",		// a promise can be in.  The state is stored
 			STATE_REJECTED = "rejected";		// in this.state as read-only
 
@@ -79,8 +79,8 @@
 
 		function Zousan(func)
 		{
-			this.state = STATE_PENDING;	// Inital state
-			this.clients = [];			// clients added while pending
+			//  this.state = STATE_PENDING;	// Inital state (PENDING is undefined, so no need to actually have this assignment)
+			//this.c = [];			// clients added while pending.   <Since 1.0.2 this is lazy instantiation>
 
 			// If a function was specified, call it back with the resolve/reject functions bound to this context
 			if(func)
@@ -94,26 +94,26 @@
 
 		Zousan.prototype = {	// Add 4 functions to our prototype: "resolve", "reject", "then" and "catch".
 
-				resolve: function(x)
+				resolve: function(value)
 				{
 					if(this.state !== STATE_PENDING)
 						return;
 
-					if(x === this)
+					if(value === this)
 						return this.reject(new TypeError("Attempt to resolve promise with self"));
 
-					if(x && (typeof x === "function" || typeof x === "object"))
+					var me = this; // preserve this
+
+					if(value && (typeof value === "function" || typeof value === "object"))
 					{
 						try
 						{
 							var first = true; // first time through?
-							var then = x.then;
+							var then = value.then;
 							if(typeof then === "function")
 							{
-								var me = this; // preserve this
-
-								// and call the x.then (which is now in "then") with x as the context and the resolve/reject functions per thenable spec
-								then.call(x,
+								// and call the value.then (which is now in "then") with value as the context and the resolve/reject functions per thenable spec
+								then.call(value,
 									function(ra) { if(first) { first=false; me.resolve(ra);}  },
 									function(rr) { if(first) { first=false; me.reject(rr); } });
 								return;
@@ -128,13 +128,13 @@
 					}
 
 					this.state = STATE_FULFILLED;
-					this.argReason = x;
+					this.v = value;
 
-					var cc = this.clients;
-					soon(function() {
-							for(var n=0, l=cc.length;n<l;n++)
-								resolveClient(cc[n],x);
-						});
+					if(me.c)
+						soon(function() {
+								for(var n=0, l=me.c.length;n<l;n++)
+									resolveClient(me.c[n],value);
+							});
 				},
 
 				reject: function(reason)
@@ -143,18 +143,17 @@
 						return;
 
 					this.state = STATE_REJECTED;
-					this.argReason = reason;
-					var cc = this.clients;
+					this.v = reason;
 
-					soon(function() {
-
-							if(cc.length === 0 && !Zousan.suppressUncaughtRejectionError)
-								console.log("You upset Zousan. Please catch rejections: ",reason);
-
-							cc.forEach(function(c) {
-									rejectClient(c,reason);
-								});
-						});
+					var clients = this.c;
+					if(clients)
+						soon(function() {
+								for(var n=0, l=clients.length;n<l;n++)
+									rejectClient(clients[n],reason);
+							});
+					else
+						if(!Zousan.suppressUncaughtRejectionError)
+							console.log("You upset Zousan. Please catch rejections: ",reason);
 				},
 
 				then: function(onF,onR)
@@ -163,10 +162,15 @@
 					var client = {y:onF,n:onR,p:p};
 
 					if(this.state === STATE_PENDING)
-						this.clients.push(client); // we are pending, so client must wait
+					{
+						if(this.c)
+							this.c.push(client); // we are pending, so client must wait
+						else
+							this.c = [client];
+					}
 					else
 					{
-						var s = this.state, a = this.argReason;
+						var s = this.state, a = this.v;
 						soon(function() { // we are not pending, so yield script and resolve/reject as needed
 								if(s === STATE_FULFILLED)
 									resolveClient(client,a);

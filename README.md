@@ -19,7 +19,7 @@ There are already several Promise implementations out there, and modern browsers
 
 ## Usage
 
-Zousan is [Promise A+ 1.1](http://promises-aplus.github.com/promises-spec) compliant, so  any documentation for spec-compliant promises applies to Zousan:
+Zousan is [Promise A+ 1.1](http://promises-aplus.github.com/promises-spec) compliant, so  any documentation for spec-compliant promises applies to Zousan. There are a couple small additions though - see below.  Briefly, the spec-compliant API is:
 
 ###Constructor
 
@@ -54,7 +54,7 @@ To use this promise to obtain the value:
 
 --------
 
-Zousan does have two additional features which are not required by the spec, but are very useful when working with promises:
+Zousan does have a couple additional features which are not required by the spec, but are very useful when working with promises. Be aware that if you use this "extension" API, your code may not be compatible with other Promise implementations:
 
 ###catch(errorFn)
 
@@ -68,7 +68,7 @@ Zousan does have two additional features which are not required by the spec, but
 		.catch(reportErr);		// Catch any errors occuring in any steps above.
 ```
 
-This pattern helps you to remember to always catch any errors produced within your promise chains.
+This pattern helps you to remember to always catch any errors produced within your promise chains. Although this isn't part of the Promise A+, it is a very common addition and is present in the ES6 (ECMAScript 2015) draft spec.
 
 -------------
 
@@ -91,7 +91,34 @@ For example, to obtain data from a list of sources:
 	Zousan.all(dataProm).then(processData, reportError);
 ```
 
+This function is also present in the ECMAScript 2015 draft spec.
+
 ---------
+
+###Convenience resolve() / reject() as Instance Methods
+
+The spec-compliant manner of resolving/rejecting a promise is to call the methods handed back to the constructor function argument, as shown in the constructor example above. Often it is more convenient (or cleaner) to resolve/reject a promise outside the constructor. For this purpose, Zousan provides resolve and reject methods right on the promise instance. So this pattern is available:
+
+```javascript
+	var promise = new Zousan();
+	if(success)
+		promise.resolve(value);
+	else
+		promise.reject(Error("error message goes here"));
+```
+
+-----------
+
+###suppressUncaughtRejectionError flag
+
+By default, Zousan will log a message to the console if a promise is rejected and that rejection is not "caught". Generally, it is best to use the ```catch()``` pattern shown above, which will ensure all rejections are handled. If you forget, this will help remind you.
+
+If you wish to suppress this warning, you can turn it off globally via:
+
+```javascript
+	Zousan.suppressUncaughtRejectionError = true;
+```
+
 
 ## FAQ
 
@@ -109,9 +136,9 @@ Because elephants never forget. So you can depend on them to keep their promises
 
 **Q: Just how fast is it?**
 
-I set up a [jsperf comparison](http://jsperf.com/promise-speed-comparison/3) between:
+I set up a [jsperf comparison](http://jsperf.com/promise-speed-comparison/6) between:
 
-* [Zousan](https://github.com/bluejava/zousan) (2,117 bytes minified)
+* [Zousan](https://github.com/bluejava/zousan) (2,053 bytes minified)
 * [Bluebird](https://github.com/petkaantonov/bluebird) (72,282 bytes minified) - Considered the king of high-performance Promises
 * [When](https://github.com/cujojs/when) (12,474 bytes minified) - An extremely popular and highly performant Promises implementation
 * Native Promises - Built into all recent browsers *except IE*.
