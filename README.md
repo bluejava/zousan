@@ -7,7 +7,6 @@
 A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation
 
 ---
-Zousan is a "Promise A+ 1.1" Compliant Promise implementation.
 
 There are already several Promise implementations out there, and modern browsers even have built-in Promises, but none met my goals, which are:
 
@@ -136,13 +135,15 @@ Because elephants never forget. So you can depend on them to keep their promises
 
 **Q: Just how fast is it?**
 
-I set up a [jsperf comparison](http://jsperf.com/promise-speed-comparison/6) between:
+I set up a [jsperf comparison](http://jsperf.com/promise-speed-comparison/7) between:
 
 * [Zousan](https://github.com/bluejava/zousan) (2,053 bytes minified)
 * [Bluebird](https://github.com/petkaantonov/bluebird) (72,282 bytes minified) - Considered the king of high-performance Promises
-* [When](https://github.com/cujojs/when) (12,474 bytes minified) - An extremely popular and highly performant Promises implementation
+* [When](https://github.com/cujojs/when) (12,474 bytes minified) - Long established and high performance Promise shim
+* [PinkySwear](https://github.com/timjansen/PinkySwear.js) (842 bytes minified) - The smallest compliant Promise immplementation I've come across
+* [convenant](https://github.com/wizardwerdna/covenant) (3,335 bytes) - A Promise implementation written in CoffeeScript
 * Native Promises - Built into all recent browsers *except IE*.
 
 **Note: Graph illustrates *operations per second*, so longer bars are better.**
 
-![](http://www.bluejava.com/int/images/Zousan-Performance.png)
+![](http://www.bluejava.com/int/images/Zousan-Performance-20150616.png)
