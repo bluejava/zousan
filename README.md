@@ -108,6 +108,29 @@ The spec-compliant manner of resolving/rejecting a promise is to call the method
 
 -----------
 
+###Convenience utility method to create Resolved or Rejected Promises
+
+To create a promise and *resolve* or *reject* it immediately:
+
+```javascript
+	// Create a promise and resolve it immediately with the value 100
+	var resolvedPromise = Zousan.resolve(100);
+	
+	// --- Note: The above is equivelent to the following: ---
+	var resolvedPromise2 = new Zousan();
+	resolvedPromise2.resolve(100);
+	
+	// --- or, the following ---
+	var resolvedPromise3 = new Zousan(function(res,rej) {
+			res(100);
+		});
+
+	// Create a promise and reject it immediately with the stated error
+	var rejectedPromise = Zousan.reject(Error("Security Error"));
+```
+
+-----------
+
 ###suppressUncaughtRejectionError flag
 
 By default, Zousan will log a message to the console if a promise is rejected and that rejection is not "caught". Generally, it is best to use the ```catch()``` pattern shown above, which will ensure all rejections are handled. If you forget, this will help remind you.
@@ -117,7 +140,6 @@ If you wish to suppress this warning, you can turn it off globally via:
 ```javascript
 	Zousan.suppressUncaughtRejectionError = true;
 ```
-
 
 ## FAQ
 

@@ -1,6 +1,6 @@
 // zousan - An absolutely Lightning Fast, Yet Very Small Promise A+ Compliant Promise
 // https://github.com/bluejava/zousan
-// Version 1.0.2
+// Version 1.1.0
 
 (function(global){
 
@@ -186,24 +186,6 @@
 
 			}; // END of prototype function list
 
-		Zousan.all = function(pa)
-		{
-			var results = [ ], rc = 0, retP = new Zousan(); // results and resolved count
-
-			function rp(p,i)
-			{
-				p.then(
-						function(yv) { results[i] = yv; rc++; if(rc == pa.length) retP.resolve(results); },
-						function(nv) { retP.reject(nv); }
-					);
-			}
-
-			for(var x=0;x<pa.length;x++)
-				rp(pa[x],x);
-
-			return retP;
-		}
-
 		function resolveClient(c,arg)
 		{
 			if(typeof c.y === "function")
@@ -231,6 +213,34 @@
 			}
 			else
 				c.p.reject(reason); // pass this along...
+		}
+
+		// "Class" functions follow (utility functions that live on the Zousan function object itself)
+
+		Zousan.resolve = function(val) { var z = new Zousan(); z.resolve(val); return z; }
+
+		Zousan.reject = function(err) { var z = new Zousan(); z.reject(err); return z; }
+
+		Zousan.all = function(pa)
+		{
+			var results = [ ], rc = 0, retP = new Zousan(); // results and resolved count
+
+			function rp(p,i)
+			{
+				p.then(
+						function(yv) { results[i] = yv; rc++; if(rc == pa.length) retP.resolve(results); },
+						function(nv) { retP.reject(nv); }
+					);
+			}
+
+			for(var x=0;x<pa.length;x++)
+				rp(pa[x],x);
+
+			// For zero length arrays, resolve immediately
+			if(!pa.length)
+				retP.resolve(results);
+
+			return retP;
 		}
 
 		if(typeof module != "undefined" && module.exports) // commonJS signature
