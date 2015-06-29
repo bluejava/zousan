@@ -159,7 +159,7 @@ Because elephants never forget. So you can depend on them to keep their promises
 
 I set up a [jsperf comparison](http://jsperf.com/promise-speed-comparison/7) between:
 
-* [Zousan](https://github.com/bluejava/zousan) (2,053 bytes minified)
+* [Zousan](https://github.com/bluejava/zousan) (2,188 bytes minified)
 * [Bluebird](https://github.com/petkaantonov/bluebird) (72,282 bytes minified) - Considered the king of high-performance Promises
 * [When](https://github.com/cujojs/when) (12,474 bytes minified) - Long established and high performance Promise shim
 * [PinkySwear](https://github.com/timjansen/PinkySwear.js) (842 bytes minified) - The smallest compliant Promise immplementation I've come across
@@ -168,4 +168,4 @@ I set up a [jsperf comparison](http://jsperf.com/promise-speed-comparison/7) bet
 
 **Note: Graph illustrates *operations per second*, so longer bars are better.**
 
-![](http://www.bluejava.com/int/images/Zousan-Performance-20150616.png)
+![](http://www.bluejava.com/int/images/Zousan-Performance-20150617.png)

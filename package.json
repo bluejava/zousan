@@ -1,7 +1,7 @@
 {
   "name": "zousan",
-  "version": "1.1.0",
-  "description": "An absolutely Lightning Fast, Yet Very Small Promise A+ Compliant Promise",
+  "version": "1.1.1",
+  "description": "A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation",
   "main": "zousan-min.js",
   "directories": {
     "test": "test"

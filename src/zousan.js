@@ -1,6 +1,6 @@
 // zousan - An absolutely Lightning Fast, Yet Very Small Promise A+ Compliant Promise
 // https://github.com/bluejava/zousan
-// Version 1.1.0
+// Version 1.1.1
 
 (function(global){
 
