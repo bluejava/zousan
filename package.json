@@ -1,26 +1,26 @@
 {
-  "name": "zousan",
-  "version": "1.1.1",
-  "description": "A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation",
-  "main": "zousan-min.js",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "test": "cd test; npm install; node zousanTest.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bluejava/zousan.git"
-  },
-  "keywords": [
-    "promises-aplus",
-    "promise"
-  ],
-  "author": "Glenn Crownover <glenn@bluejava.com> (http://www.bluejava.com)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/bluejava/zousan/issues"
-  },
-  "homepage": "https://github.com/bluejava/zousan#readme"
+	"name": "zousan",
+	"version": "1.1.2",
+	"description": "A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation",
+	"main": "zousan-min.js",
+	"directories": {
+		"test": "test"
+	},
+	"scripts": {
+		"test": "cd test; npm install; node zousanTest.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/bluejava/zousan.git"
+	},
+	"keywords": [
+		"promises-aplus",
+		"promise"
+	],
+	"author": "Glenn Crownover <glenn@bluejava.com> (http://www.bluejava.com)",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/bluejava/zousan/issues"
+	},
+	"homepage": "https://github.com/bluejava/zousan#readme"
 }

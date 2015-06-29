@@ -1,10 +1,18 @@
 // zousan - An absolutely Lightning Fast, Yet Very Small Promise A+ Compliant Promise
 // https://github.com/bluejava/zousan
-// Version 1.1.1
+// Version 1.1.2
 
 (function(global){
 
 		"use strict";
+
+		var
+			STATE_PENDING,					// These are the three possible states (PENDING remains undefined - as intended)
+			STATE_FULFILLED = "fulfilled",		// a promise can be in.  The state is stored
+			STATE_REJECTED = "rejected",		// in this.state as read-only
+
+			_undefined,
+			_undefinedString = "undefined";
 
 		// See http://www.bluejava.com/4NS/Speed-up-your-Websites-with-a-Faster-setTimeout-using-soon
 		// This is a very fast "asynchronous" flow control - i.e. it yields the thread and executes later,
@@ -39,7 +47,7 @@
 				var cqYield = (function() {
 
 						// This is the fastest way browsers have to yield processing
-						if(typeof MutationObserver !== "undefined")
+						if(typeof MutationObserver !== _undefinedString)
 						{
 							// first, create a div not attached to DOM to "observe"
 							var dd = document.createElement("div");
@@ -50,7 +58,7 @@
 						}
 
 						// if No MutationObserver - this is the next best thing - handles Node and MSIE
-						if(typeof setImmediate !== "undefined")
+						if(typeof setImmediate !== _undefinedString)
 							return function() { setImmediate(callQueue) }
 
 						// final fallback - shouldn't be used for much except very old browsers
@@ -69,11 +77,6 @@
 					};
 
 			})();
-
-		var
-			STATE_PENDING = undefined,			// These are the three possible states
-			STATE_FULFILLED = "fulfilled",		// a promise can be in.  The state is stored
-			STATE_REJECTED = "rejected";		// in this.state as read-only
 
 		// -------- BEGIN our main "class" definition here -------------
 
@@ -191,7 +194,7 @@
 			if(typeof c.y === "function")
 			{
 				try {
-						var yret = c.y.call(undefined,arg);
+						var yret = c.y.call(_undefined,arg);
 						c.p.resolve(yret);
 					}
 				catch(err) { c.p.reject(err) }
@@ -206,7 +209,7 @@
 			{
 				try
 				{
-					var yret = c.n.call(undefined,reason);
+					var yret = c.n.call(_undefined,reason);
 					c.p.resolve(yret);
 				}
 				catch(err) { c.p.reject(err) }
@@ -243,8 +246,13 @@
 			return retP;
 		}
 
-		if(typeof module != "undefined" && module.exports) // commonJS signature
+		// If this appears to be a commonJS environment, assign Zousan as the module export
+		if(typeof module != _undefinedString && module.exports) // commonJS signature
 			module.exports = Zousan; // this is our module export.  It will also be global, along with soon
+
+		// If this appears to be an AMD environment, define Zousan as the module export (commented out until confirmed works with r.js)
+		//if(global.define && global.define.amd)
+		//	global.define([], function() { return Zousan });
 
 		// here are our global variables..
 		global.Zousan = Zousan;

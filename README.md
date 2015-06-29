@@ -115,11 +115,11 @@ To create a promise and *resolve* or *reject* it immediately:
 ```javascript
 	// Create a promise and resolve it immediately with the value 100
 	var resolvedPromise = Zousan.resolve(100);
-	
+
 	// --- Note: The above is equivelent to the following: ---
 	var resolvedPromise2 = new Zousan();
 	resolvedPromise2.resolve(100);
-	
+
 	// --- or, the following ---
 	var resolvedPromise3 = new Zousan(function(res,rej) {
 			res(100);
@@ -159,7 +159,7 @@ Because elephants never forget. So you can depend on them to keep their promises
 
 I set up a [jsperf comparison](http://jsperf.com/promise-speed-comparison/7) between:
 
-* [Zousan](https://github.com/bluejava/zousan) (2,188 bytes minified)
+* [Zousan](https://github.com/bluejava/zousan) (2,160 bytes minified)
 * [Bluebird](https://github.com/petkaantonov/bluebird) (72,282 bytes minified) - Considered the king of high-performance Promises
 * [When](https://github.com/cujojs/when) (12,474 bytes minified) - Long established and high performance Promise shim
 * [PinkySwear](https://github.com/timjansen/PinkySwear.js) (842 bytes minified) - The smallest compliant Promise immplementation I've come across
