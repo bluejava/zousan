@@ -166,12 +166,13 @@
 
 					if(this.state === STATE_PENDING)
 					{
+						 // we are pending, so client must wait - so push client to end of this.c array (create if necessary for efficiency)
 						if(this.c)
-							this.c.push(client); // we are pending, so client must wait
+							this.c.push(client);
 						else
 							this.c = [client];
 					}
-					else
+					else // if state was NOT pending, then we can just immediately (soon) call the resolve/reject handler
 					{
 						var s = this.state, a = this.v;
 						soon(function() { // we are not pending, so yield script and resolve/reject as needed
@@ -185,7 +186,23 @@
 					return p;
 				},
 
-				"catch": function(cfn) { this.then(null,cfn); }
+				"catch": function(cfn) { return this.then(null,cfn); }, // convenience method
+
+				// new for 1.2  - this returns a new promise that times out if original promise does not resolve/reject before the time specified.
+				// Note: this has no effect on the original promise - which may still resolve/reject at a later time.
+				"timeout" : function(ms)
+				{
+					var p = new Zousan(), pp = this;
+
+					setTimeout(function() {
+							p.reject(Error("timeout"));	// This will fail silently if promise already resolved or rejected
+						}, ms);
+
+					pp.then(function(v) { p.resolve(v) },		// This will fail silently if promise already timed out
+							function(er) { p.reject(er) });		// This will fail silently if promise already timed out
+
+					return p;
+				}
 
 			}; // END of prototype function list
 
