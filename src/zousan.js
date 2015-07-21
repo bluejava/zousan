@@ -1,6 +1,6 @@
 // zousan - An absolutely Lightning Fast, Yet Very Small Promise A+ Compliant Promise
 // https://github.com/bluejava/zousan
-// Version 1.1.2
+// Version 1.1.3
 
 (function(global){
 
@@ -185,7 +185,7 @@
 					return p;
 				},
 
-				"catch": function(cfn) { this.then(null,cfn); }
+				"catch": function(cfn) { return this.then(null,cfn); }
 
 			}; // END of prototype function list
 
