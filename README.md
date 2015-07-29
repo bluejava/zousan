@@ -16,6 +16,8 @@ There are already several Promise implementations out there, and modern browsers
 4. **Usable Everywhere** - I required compatability with browsers (both new and old), mobile devices, Node and even make a best effort to work in unknown environments.
 5. **Simple Build** - No dependencies, few files, dog bone simple. (is that a phrase?)
 
+Check out this blog post called [A Promising Start - Embracing Speed and Elegance with Zousan Promises](http://www.bluejava.com/4Nc/A-Promising-Start---Embracing-Speed-and-Elegance-with-Zousan-Promises) where I describe why and how I created this implementation.
+
 ## Usage
 
 Zousan is [Promise A+ 1.1](http://promises-aplus.github.com/promises-spec) compliant, so  any documentation for spec-compliant promises applies to Zousan. There are a couple small additions though - see below.  Briefly, the spec-compliant API is:
@@ -52,6 +54,8 @@ To use this promise to obtain the value:
 ```
 
 --------
+
+## Extensions
 
 Zousan does have a couple additional features which are not required by the spec, but are very useful when working with promises. Be aware that if you use this "extension" API, your code may not be compatible with other Promise implementations:
 
@@ -92,6 +96,37 @@ For example, to obtain data from a list of sources:
 
 This function is also present in the ECMAScript 2015 draft spec.
 
+-------------
+
+###timeout(ms)
+
+New for version 1.2, this method returns a new promise based on the original that times out (rejects with ```Error("Timeout")```) if the original promise does not resolve or reject before the time specified (in milliseconds).
+
+```javascript
+	// Create a new promise that times out after 3 seconds
+	var prom = new Zousan().timeout(3000);
+	prom.then(doit,problem);
+```
+
+**Note:** This has no effect on the original promise - which may still resolve/reject at a later time. This pattern allows you to create a timeout promise against any existing promise, such as one returned from an API, without disturbing the original promise:
+
+```javascript
+	// Use the getData() function but only wait for a maximum of 2 seconds
+	getData(url).timeout(2000).then(process, error);
+```
+
+**Note 2:** You can intersperce multiple timeout() calls within your then chains, just remember that the timeouts all start counting immediately, so the time specified must be cumulative up to that point:
+
+```javascript
+	getData(url)
+		.timeout(1000)	// allow 1 second to obtain the data
+		.filter1()
+		.timeout(1500)	// allow up to 1.5 seconds to get to this point
+		.filter2()
+		.timeout(2000)	// allow up to 2 seconds to get to this point
+		.then(process, error);
+``` 
+
 ---------
 
 ###Convenience resolve() / reject() as Instance Methods
@@ -109,6 +144,10 @@ The spec-compliant manner of resolving/rejecting a promise is to call the method
 -----------
 
 ###Convenience utility method to create Resolved or Rejected Promises
+
+These functions create new promises and resolve or reject them with values or errors all in one convenient step. 
+
+**Note:** This differs from the above resolve/reject instance methods in that these are functions which create *new* promises in a resolved or rejected state, whereas the instance methods of the same names above resolve or reject a previously existing promise (hense, those are instance methods while these are not)
 
 To create a promise and *resolve* or *reject* it immediately:
 
@@ -133,7 +172,7 @@ To create a promise and *resolve* or *reject* it immediately:
 
 ###suppressUncaughtRejectionError flag
 
-By default, Zousan will log a message to the console if a promise is rejected and that rejection is not "caught". Generally, it is best to use the ```catch()``` pattern shown above, which will ensure all rejections are handled. If you forget, this will help remind you.
+By default, Zousan will log a message to the console if a promise is rejected and that rejection is not "caught". Generally, it is best to use the ```catch()``` pattern shown above, which will ensure all rejections are handled. If you forget, you will upset Zousan, and he will remind you.
 
 If you wish to suppress this warning, you can turn it off globally via:
 
@@ -154,6 +193,14 @@ Well, if you had a 3-year-old Japanese child, you would know, now wouldn't you!?
 **Q: Ok, cute - but why name it after an Elephant?**
 
 Because elephants never forget. So you can depend on them to keep their promises!
+
+**Q: Why did you write another Promise implementation?**
+
+I briefly explained why at the top of this README - but for a more detailed explanation, check out my [blog post on the subject.](http://www.bluejava.com/4Nc/A-Promising-Start---Embracing-Speed-and-Elegance-with-Zousan-Promises)
+
+**Q: How did you make it run so fast?**
+
+I discuss that a bit on my [Zousan blog post](http://www.bluejava.com/4Nc/A-Promising-Start---Embracing-Speed-and-Elegance-with-Zousan-Promises) as well.
 
 **Q: Just how fast is it?**
 

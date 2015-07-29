@@ -2,6 +2,9 @@
 // https://github.com/bluejava/zousan
 // Version 1.2.0
 
+/* jshint asi: true, browser: true */
+/* global setImmediate, console */
+
 (function(global){
 
 		"use strict";
@@ -192,16 +195,17 @@
 				// Note: this has no effect on the original promise - which may still resolve/reject at a later time.
 				"timeout" : function(ms)
 				{
-					var p = new Zousan(), pp = this;
+					var me = this;
+					return new Zousan(function(resolve,reject) {
 
-					setTimeout(function() {
-							p.reject(Error("timeout"));	// This will fail silently if promise already resolved or rejected
-						}, ms);
+							setTimeout(function() {
+									reject(Error("Timeout"));	// This will fail silently if promise already resolved or rejected
+								}, ms);
 
-					pp.then(function(v) { p.resolve(v) },		// This will fail silently if promise already timed out
-							function(er) { p.reject(er) });		// This will fail silently if promise already timed out
+							me.then(function(v) { resolve(v) },		// This will fail silently if promise already timed out
+									function(er) { reject(er) });		// This will fail silently if promise already timed out
 
-					return p;
+						})
 				}
 
 			}; // END of prototype function list
@@ -264,8 +268,8 @@
 		}
 
 		// If this appears to be a commonJS environment, assign Zousan as the module export
-		if(typeof module != _undefinedString && module.exports) // commonJS signature
-			module.exports = Zousan; // this is our module export.  It will also be global, along with soon
+		if(typeof module != _undefinedString && module.exports)		// jshint ignore:line
+			module.exports = Zousan;	// jshint ignore:line
 
 		// If this appears to be an AMD environment, define Zousan as the module export (commented out until confirmed works with r.js)
 		//if(global.define && global.define.amd)
@@ -275,4 +279,4 @@
 		global.Zousan = Zousan;
 		global.soon = soon;
 
-	})(typeof global != "undefined" ? global : this);
+	})(typeof global != "undefined" ? global : this);	// jshint ignore:line
