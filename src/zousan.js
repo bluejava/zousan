@@ -251,6 +251,9 @@
 
 			function rp(p,i)
 			{
+				if (typeof p.then !== "function") {
+					p = Zousan.resolve(p);
+				}
 				p.then(
 						function(yv) { results[i] = yv; rc++; if(rc == pa.length) retP.resolve(results); },
 						function(nv) { retP.reject(nv); }
