@@ -1,6 +1,6 @@
 // zousan - An absolutely Lightning Fast, Yet Very Small Promise A+ Compliant Promise
 // https://github.com/bluejava/zousan
-// Version 1.2.0
+// Version 1.2.1
 
 /* jshint asi: true, browser: true */
 /* global setImmediate, console */
@@ -251,9 +251,8 @@
 
 			function rp(p,i)
 			{
-				if (typeof p.then !== "function") {
+				if(typeof p.then !== "function")
 					p = Zousan.resolve(p);
-				}
 				p.then(
 						function(yv) { results[i] = yv; rc++; if(rc == pa.length) retP.resolve(results); },
 						function(nv) { retP.reject(nv); }
