@@ -1,6 +1,6 @@
 // zousan - An absolutely Lightning Fast, Yet Very Small Promise A+ Compliant Promise
 // https://github.com/bluejava/zousan
-// Version 1.2.1
+// Version 1.3.0
 
 /* jshint asi: true, browser: true */
 /* global setImmediate, console */
@@ -159,7 +159,7 @@
 							});
 					else
 						if(!Zousan.suppressUncaughtRejectionError)
-							console.log("You upset Zousan. Please catch rejections: ",reason);
+							console.log("You upset Zousan. Please catch rejections: ",reason,reason.stack);
 				},
 
 				then: function(onF,onR)
