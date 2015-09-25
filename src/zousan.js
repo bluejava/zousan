@@ -1,6 +1,6 @@
-// zousan - An absolutely Lightning Fast, Yet Very Small Promise A+ Compliant Promise
+// zousan - An Lightning Fast, Yet Very Small Promise A+ Compliant Implementation
 // https://github.com/bluejava/zousan
-// Version 1.3.0
+// Version 2.0.0
 
 /* jshint asi: true, browser: true */
 /* global setImmediate, console */
@@ -277,8 +277,10 @@
 		//if(global.define && global.define.amd)
 		//	global.define([], function() { return Zousan });
 
-		// here are our global variables..
+		// Make Zousan a global variable in all environments
 		global.Zousan = Zousan;
-		global.soon = soon;
+
+		// make soon accessable from Zousan
+		Zousan.soon = soon;
 
 	})(typeof global != "undefined" ? global : this);	// jshint ignore:line
