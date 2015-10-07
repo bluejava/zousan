@@ -66,7 +66,7 @@ describe("Zousan extension testing", function() {
 						p1.resolve(3);
 					});
 
-				it("passes the rejection through to the timeout promise transparently if resolved before timeout", function(done) {
+				it("passes the rejection through to the timeout promise transparently if rejected before timeout", function(done) {
 
 						var p1 = new Zousan();		// Create a promise
 						var p2 = p1.timeout(500); 	// Create another promise against p1 that times out in 500ms
@@ -103,30 +103,47 @@ describe("Zousan extension testing", function() {
 
 			});
 
-			describe("Immediate creation of resolved or rejected promises via convenience functions", function() {
+		describe("Immediate creation of resolved or rejected promises via convenience functions", function() {
 
-				it("allows the creation of a resolved promise", function(done) {
+			it("allows the creation of a resolved promise", function(done) {
 
-						var p1 = Zousan.resolve(100);
-						p1.then(function(value) {
-								assert.equal(value,100);
-								done();
-							}).catch(done);
+					var p1 = Zousan.resolve(100);
+					p1.then(function(value) {
+							assert.equal(value,100);
+							done();
+						}).catch(done);
 
-					});
-
-				it("allows the creation of a rejected promise", function(done) {
-
-						var p1 = Zousan.reject(Error("Test Rejection"));
-
-						p1.then(function(value) {
-								done(Error("Should not resolve in this case"));
-							}).catch(function(reason) {
-								assert.equal(reason.name,"Error");
-								assert.equal(reason.message,"Test Rejection");
-								done();
-							});
-
-					});
 				});
+
+			it("allows the creation of a rejected promise", function(done) {
+
+					var p1 = Zousan.reject(Error("Test Rejection"));
+
+					p1.then(function(value) {
+							done(Error("Should not resolve in this case"));
+						}).catch(function(reason) {
+							assert.equal(reason.name,"Error");
+							assert.equal(reason.message,"Test Rejection");
+							done();
+						});
+
+				});
+			})
+
+		describe("finally() for handling both resolved and rejected promises", function() {
+
+			it("executes the finally handler for resolved promises", function(done) {
+					Zousan.resolve(true).finally(function() {
+							done()
+						})
+				})
+
+			it("executes the finally handler for rejected promises", function(done) {
+					Zousan.reject(Error("rejected")).finally(function() {
+							done()
+						})
+				})
+
+			})
+
 	})

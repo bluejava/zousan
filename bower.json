@@ -1,27 +1,31 @@
 {
-  "name": "zousan",
-  "version": "2.0.0",
-  "homepage": "https://github.com/bluejava/zousan",
-  "authors": [
-    "Glenn Crownover <glenn@bluejava.com>"
-  ],
-  "description": "A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation",
-  "main": "src/zousan.js",
-  "moduleType": [
-    "globals",
-    "node"
-  ],
-  "keywords": [
-    "promises-aplus",
-    "promise"
-  ],
-  "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "package.json",
-    "README.md"
-  ]
+	"name": "zousan",
+	"version": "2.1.0",
+	"homepage": "https://github.com/bluejava/zousan",
+	"authors":
+	[
+		"Glenn Crownover <glenn@bluejava.com>"
+	],
+	"description": "A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation",
+	"main": "src/zousan.js",
+	"moduleType":
+	[
+		"globals",
+		"node"
+	],
+	"keywords":
+	[
+		"promises-aplus",
+		"promise"
+	],
+	"license": "MIT",
+	"ignore":
+	[
+		"**/.*",
+		"node_modules",
+		"bower_components",
+		"test",
+		"package.json",
+		"README.md"
+	]
 }

@@ -1,6 +1,6 @@
 // zousan - An Lightning Fast, Yet Very Small Promise A+ Compliant Implementation
 // https://github.com/bluejava/zousan
-// Version 2.0.0
+// Version 2.1.0
 
 /* jshint asi: true, browser: true */
 /* global setImmediate, console */
@@ -98,7 +98,7 @@
 			}
 		}
 
-		Zousan.prototype = {	// Add 5 functions to our prototype: "resolve", "reject", "then", "catch" and "finally".
+		Zousan.prototype = {	// Add 6 functions to our prototype: "resolve", "reject", "then", "catch", "finally" and "timeout"
 
 				resolve: function(value)
 				{
