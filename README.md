@@ -3,7 +3,7 @@
          align="right" alt="Promises/A+ logo" />
 </a>
 
-# Zousan
+# Zousan 🐘
 A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation
 
 ---
