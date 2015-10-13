@@ -1,6 +1,6 @@
 {
 	"name": "zousan",
-	"version": "2.1.1",
+	"version": "2.1.2",
 	"homepage": "https://github.com/bluejava/zousan",
 	"authors":
 	[
@@ -26,6 +26,7 @@
 		"bower_components",
 		"test",
 		"package.json",
-		"README.md"
+		"README.md",
+		".travis.yml"
 	]
 }

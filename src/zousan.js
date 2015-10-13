@@ -1,6 +1,6 @@
 // zousan - A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation
 // https://github.com/bluejava/zousan
-// Version 2.1.1
+// Version 2.1.2
 
 /* jshint asi: true, browser: true */
 /* global setImmediate, console */
