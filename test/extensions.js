@@ -90,8 +90,38 @@ describe("Zousan extension testing", function() {
 						p2.then(function(value) {
 								done(Error("Should not resolve in this case"));
 							}).catch(function(reason) {
-								assert.equal(reason.name,"Error");
-								assert.equal(reason.message,"Timeout");
+								try
+								{
+									assert.equal(reason.name,"Error");
+									assert.equal(reason.message,"Timeout");
+								}
+								catch(err) { return done(err) }
+
+								done();
+							});
+
+						// Resolve the original promise in 200ms (enough time to allow p2 to time out)
+						setTimeout(function() {
+								p1.resolve(5);
+							}, 200);
+					});
+
+				it("allows for custom timeout messages", function(done) {
+
+						var p1 = new Zousan();		// Create a promise
+						var customTimeoutMsg = "Test Timeout Message 100";
+						var p2 = p1.timeout(100,customTimeoutMsg); 	// Create another promise against p1 that times out in 100ms
+
+						p2.then(function(value) {
+								done(Error("Should not resolve in this case"));
+							}).catch(function(reason) {
+								try
+								{
+									assert.equal(reason.name,"Error");
+									assert.equal(reason.message,customTimeoutMsg);
+								}
+								catch(err) { return done(err) }
+
 								done();
 							});
 

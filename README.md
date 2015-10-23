@@ -115,9 +115,9 @@ This function is also present in the [ECMAScript 2015 spec](http://www.ecma-inte
 
 -------------
 
-###timeout(ms)
+###timeout(ms[,msg])
 
-New for version 1.2, this method returns a new promise based on the original that times out (rejects with ```Error("Timeout")```) if the original promise does not resolve or reject before the time specified (in milliseconds).
+This method returns a new promise based on the original that times out (rejects with `Error("Timeout")` or if specified `Error(msg)`) if the original promise does not resolve or reject before the time specified (in milliseconds).
 
 ```javascript
 	// Create a new promise that times out after 3 seconds

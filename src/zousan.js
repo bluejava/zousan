@@ -1,6 +1,7 @@
 // zousan - A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation
 // https://github.com/bluejava/zousan
-// Version 2.1.2
+// Version 2.2.0
+// License: MIT
 
 /* jshint asi: true, browser: true */
 /* global setImmediate, console */
@@ -194,13 +195,14 @@
 
 				// new for 1.2  - this returns a new promise that times out if original promise does not resolve/reject before the time specified.
 				// Note: this has no effect on the original promise - which may still resolve/reject at a later time.
-				"timeout" : function(ms)
+				"timeout" : function(ms,timeoutMsg)
 				{
+					timeoutMsg = timeoutMsg || "Timeout"
 					var me = this;
 					return new Zousan(function(resolve,reject) {
 
 							setTimeout(function() {
-									reject(Error("Timeout"));	// This will fail silently if promise already resolved or rejected
+									reject(Error(timeoutMsg));	// This will fail silently if promise already resolved or rejected
 								}, ms);
 
 							me.then(function(v) { resolve(v) },		// This will fail silently if promise already timed out
