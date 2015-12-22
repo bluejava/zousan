@@ -1,6 +1,6 @@
 // zousan - A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation
 // https://github.com/bluejava/zousan
-// Version 2.2.0
+// Version 2.2.1
 // License: MIT
 
 /* jshint asi: true, browser: true */
@@ -30,7 +30,8 @@
 		var soon = (function() {
 
 				var	fq = [], // function queue;
-					fqStart = 0; // avoid using shift() by maintaining a start pointer - and remove items in chunks of 1024
+					fqStart = 0, // avoid using shift() by maintaining a start pointer - and remove items in chunks of 1024 (bufferSize)
+					bufferSize = 1024
 
 				function callQueue()
 				{
@@ -38,12 +39,11 @@
 					{
 						fq[fqStart](); // no context or args..
 						fqStart++;
-						if(fqStart > 1024)
+						if(fqStart == bufferSize)
 						{
-							fq.splice(0,fqStart);
+							fq.splice(0,bufferSize);
 							fqStart = 0;
 						}
-						//fq.shift(); // remove element just processed... do this after processing so we don't go 0 and trigger soon again
 					}
 				}
 
