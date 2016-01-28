@@ -1,6 +1,6 @@
 // zousan - A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation
 // https://github.com/bluejava/zousan
-// Version 2.2.1
+// Version 2.2.2
 // License: MIT
 
 /* jshint asi: true, browser: true */
@@ -15,8 +15,8 @@
 			STATE_FULFILLED = "fulfilled",		// a promise can be in.  The state is stored
 			STATE_REJECTED = "rejected",		// in this.state as read-only
 
-			_undefined,
-			_undefinedString = "undefined";
+			_undefined,						// let the obfiscator compress these down
+			_undefinedString = "undefined";		// by assigning them to variables (debatable "optimization")
 
 		// See http://www.bluejava.com/4NS/Speed-up-your-Websites-with-a-Faster-setTimeout-using-soon
 		// This is a very fast "asynchronous" flow control - i.e. it yields the thread and executes later,
@@ -38,7 +38,7 @@
 					while(fq.length - fqStart) // this approach allows new yields to pile on during the execution of these
 					{
 						fq[fqStart](); // no context or args..
-						fqStart++;
+						fq[fqStart++] = _undefined	// increase start pointer and dereference function just called
 						if(fqStart == bufferSize)
 						{
 							fq.splice(0,bufferSize);
