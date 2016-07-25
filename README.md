@@ -20,6 +20,8 @@ Check out this blog post called [A Promising Start - Embracing Speed and Eleganc
 
 ## Usage
 
+Zousan is defined as a UMD (Universal Module Definition), compliant with AMD and CommonJS module styles, as well as simple browser script includes which define `Zousan` globally.
+
 Zousan is [Promise A+ 1.1](http://promises-aplus.github.com/promises-spec) compliant, so  any documentation for spec-compliant promises applies to Zousan. There are a couple small additions though - see below.  Briefly, the spec-compliant API is:
 
 ###Constructor

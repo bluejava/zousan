@@ -1,6 +1,6 @@
 // zousan - A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation
 // https://github.com/bluejava/zousan
-// Version 2.2.2
+// Version 2.3.0
 // License: MIT
 
 /* jshint asi: true, browser: true */
@@ -276,9 +276,9 @@
 		if(typeof module != _undefinedString && module.exports)		// jshint ignore:line
 			module.exports = Zousan;	// jshint ignore:line
 
-		// If this appears to be an AMD environment, define Zousan as the module export (commented out until confirmed works with r.js)
-		//if(global.define && global.define.amd)
-		//	global.define([], function() { return Zousan });
+		// If this appears to be an AMD environment, define Zousan as the module export
+		if(global.define && global.define.amd)
+			global.define([], function() { return Zousan });
 
 		// Make Zousan a global variable in all environments
 		global.Zousan = Zousan;
