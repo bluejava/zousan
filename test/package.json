@@ -2,7 +2,7 @@
 	"name": "zousan-compliance-testing",
 	"description": "Promises/A+ Compliance Testing for Zousan",
 	"keywords": ["promises", "promises-aplus"],
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"implements": ["Zousan-Compliance-Testing"],
 	"author": "Glenn Crownover <glenn@bluejava.com> (http://bluejava.com)",
 	"license": "MIT",

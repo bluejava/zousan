@@ -98,6 +98,8 @@ This method is not part of the Promise A+ spec nor included in [ECMAScript2015 s
 
 The other addition is a utility function called ```all()``` which takes an array of promises and returns a single promise that will resolve when all promises in the array resolve. The value passed to you is an array with the values from each promise respectively. If any promise within the passed array rejects, this will reject with the same error as the original rejection.
 
+**Note:** The array can contain non-promises as well. They will be passed through to the resolved array as-is.
+
 It is available by calling ```Zousan.all()``` (i.e. does not require a promise instance).
 
 For example, to obtain data from a list of sources:
@@ -147,7 +149,7 @@ This method returns a new promise based on the original that times out (rejects 
 	data.timeout(3000)	// after 3 seconds, display a cancel button
 		.catch(displayCancelButton)
 
-``` 
+```
 
 ---------
 
@@ -167,7 +169,7 @@ The spec-compliant manner of resolving/rejecting a promise is to call the method
 
 ###Convenience utility method to create Resolved or Rejected Promises
 
-These functions create new promises and resolve or reject them with values or errors all in one convenient step. 
+These functions create new promises and resolve or reject them with values or errors all in one convenient step.
 
 **Note:** This differs from the above resolve/reject instance methods in that these are functions which create *new* promises in a resolved or rejected state, whereas the instance methods of the same names above resolve or reject a previously existing promise (hense, those are instance methods while these are not)
 

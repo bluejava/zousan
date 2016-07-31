@@ -48,6 +48,47 @@ describe("Zousan extension testing", function() {
 						p2.reject(Error("Test Rejection"));
 					});
 
+				it("handles a mix of promises and non-promises, passing the non-promises through as is", function(done) {
+						var p1 = new Zousan(),
+						    	p2 = new Zousan();
+
+						var promiseArray = [p1,123,"test",p2];
+
+						Zousan.all(promiseArray).then(function(values) {
+								assert.strictEqual(values.length,4);
+								assert.strictEqual(values[0],3);
+								assert.strictEqual(values[1],123);
+								assert.strictEqual(values[2],"test");
+								assert.strictEqual(values[3],5);
+								done();
+							}).catch(done);
+
+						p1.resolve(3);
+						p2.resolve(5);
+					});
+
+				it("handles null, undefined and other special values", function(done) {
+						var p1 = new Zousan(), error = Error("test error")
+
+						var promiseArray = [p1,0,false,true,undefined,null,NaN,Infinity,error];
+
+						Zousan.all(promiseArray).then(function(values) {
+								assert.strictEqual(values.length,9);
+								assert.strictEqual(values[0],3);
+								assert.strictEqual(values[1],0);
+								assert.strictEqual(values[2],false);
+								assert.strictEqual(values[3],true);
+								assert.strictEqual(values[4],undefined);
+								assert.strictEqual(values[5],null);
+								assert.ok(isNaN(values[6]));
+								assert.strictEqual(values[7],Infinity);
+								assert.strictEqual(values[8],error);
+								done();
+							}).catch(done);
+
+						p1.resolve(3);
+					});
+
 			});
 
 
