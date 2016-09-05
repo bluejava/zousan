@@ -1,6 +1,7 @@
 // zousan - A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation
 // https://github.com/bluejava/zousan
-// Version 2.3.1
+// Author: Glenn Crownover <glenn@bluejava.com> (http://www.bluejava.com)
+// Version 2.3.2
 // License: MIT
 
 /* jshint asi: true, browser: true */

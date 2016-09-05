@@ -1,5 +1,5 @@
 <a href="http://promises-aplus.github.com/promises-spec">
-    <img src="http://promises-aplus.github.com/promises-spec/assets/logo-small.png"
+    <img src="https://promisesaplus.com/assets/logo-small.png"
          align="right" alt="Promises/A+ logo" />
 </a>
 
@@ -13,10 +13,12 @@ There are already several Promise implementations out there, and modern browsers
 1. **Exceedingly Fast** - it had to be the fastest possible implementation, so it could be used excessively throughout a codebase with impunity. (Even games!)
 2. **Extremely Small** - I will be using this in all my future projects, including mobile, and so fast and efficient code is essential. Also, the less code there is, the less can go wrong.
 3. **Clearly written and Documented** - I want to clearly see (and clearly demonstrate to others) how the code works, both to build confidence in its correctness, and to make it easier to fix/maintain if/when necessary.
-4. **Usable Everywhere** - I required compatability with browsers (both new and old), mobile devices, Node and even make a best effort to work in unknown environments.
+4. **Usable Everywhere** - I required compatibility with browsers (both new and old), mobile devices, Node and even make a best effort to work in unknown environments.
 5. **Simple Build** - No dependencies, few files, dog bone simple. (is that a phrase?)
 
 Check out this blog post called [A Promising Start - Embracing Speed and Elegance with Zousan Promises](http://www.bluejava.com/4Nc/A-Promising-Start---Embracing-Speed-and-Elegance-with-Zousan-Promises) where I describe why and how I created this implementation.
+
+**Update:** There is now an extension library with some handy functions for dealing with Promises (from Zousan or otherwise): [Zousan-plus](https://github.com/bluejava/zousan-plus) 🐘➕
 
 ## Usage
 
@@ -70,7 +72,7 @@ Zousan does have a couple additional features which are not required by the spec
 		.then(lookupItems) 		//   takes the data and obtains extra data about items
 		.then(updateCount)		//   update item count using host service
 		.then(displayResults)	//   update user view of results
-		.catch(reportErr)		// Catch any errors occuring in any steps above.
+		.catch(reportErr)		// Catch any errors occurring in any steps above.
 ```
 
 This pattern helps you to remember to always catch any errors produced within your promise chains. Although this isn't part of the Promise A+, it is a very common addition and is present in the [ECMAScript 2015 Language Specification](http://www.ecma-international.org/ecma-262/6.0/#sec-promise.prototype.catch).
@@ -86,7 +88,7 @@ This pattern helps you to remember to always catch any errors produced within yo
 		.then(lookupItems) 		//   takes the data and obtains extra data about items
 		.then(updateCount)		//   update item count using host service
 		.then(displayResults)	//   update user view of results
-		.catch(reportErr)		// Catch any errors occuring in any steps above
+		.catch(reportErr)		// Catch any errors occurring in any steps above
 		.finally(cleanup)		// Release resources, stop spinner, etc.
 ```
 
@@ -136,7 +138,7 @@ This method returns a new promise based on the original that times out (rejects 
 	getData(url).timeout(2000).then(process, error)
 ```
 
-**Note 2:** Be careful of promise chains containing multiple timeouts. To trigger handlers at multiple timeout points, use seperate statements, like this:
+**Note 2:** Be careful of promise chains containing multiple timeouts. To trigger handlers at multiple timeout points, use separate statements, like this:
 
 ```javascript
 	var data = getData(url)
@@ -171,7 +173,7 @@ The spec-compliant manner of resolving/rejecting a promise is to call the method
 
 These functions create new promises and resolve or reject them with values or errors all in one convenient step.
 
-**Note:** This differs from the above resolve/reject instance methods in that these are functions which create *new* promises in a resolved or rejected state, whereas the instance methods of the same names above resolve or reject a previously existing promise (hense, those are instance methods while these are not)
+**Note:** This differs from the above resolve/reject instance methods in that these are functions which create *new* promises in a resolved or rejected state, whereas the instance methods of the same names above resolve or reject a previously existing promise (hence, those are instance methods while these are not)
 
 To create a promise and *resolve* or *reject* it immediately:
 
@@ -179,7 +181,7 @@ To create a promise and *resolve* or *reject* it immediately:
 	// Create a promise and resolve it immediately with the value 100
 	var resolvedPromise = Zousan.resolve(100);
 
-	// --- Note: The above is equivelent to the following: ---
+	// --- Note: The above is equivalent to the following: ---
 	var resolvedPromise2 = new Zousan();
 	resolvedPromise2.resolve(100);
 
@@ -233,10 +235,14 @@ I set up a [jsperf comparison](http://jsperf.com/promise-speed-comparison/7) bet
 * [Zousan](https://github.com/bluejava/zousan) (2,160 bytes minified)
 * [Bluebird](https://github.com/petkaantonov/bluebird) (72,282 bytes minified) - Considered the king of high-performance Promises
 * [When](https://github.com/cujojs/when) (12,474 bytes minified) - Long established and high performance Promise shim
-* [PinkySwear](https://github.com/timjansen/PinkySwear.js) (842 bytes minified) - The smallest compliant Promise immplementation I've come across
-* [convenant](https://github.com/wizardwerdna/covenant) (3,335 bytes) - A Promise implementation written in CoffeeScript
+* [PinkySwear](https://github.com/timjansen/PinkySwear.js) (842 bytes minified) - The smallest compliant Promise implementation I've come across
+* [covenant](https://github.com/wizardwerdna/covenant) (3,335 bytes) - A Promise implementation written in CoffeeScript
 * Native Promises - Built into all recent browsers *except IE*.
 
 **Note: Graph illustrates *operations per second*, so longer bars are better.**
 
 ![](http://www.bluejava.com/int/images/Zousan-Performance-20150617.png)
+
+### License
+
+See the LICENSE file for license rights and limitations (MIT).
