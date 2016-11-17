@@ -1,7 +1,7 @@
 // zousan - A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation
 // https://github.com/bluejava/zousan
 // Author: Glenn Crownover <glenn@bluejava.com> (http://www.bluejava.com)
-// Version 2.3.2
+// Version 2.3.3
 // License: MIT
 
 /* jshint asi: true, browser: true */
@@ -38,7 +38,8 @@
 				{
 					while(fq.length - fqStart) // this approach allows new yields to pile on during the execution of these
 					{
-						fq[fqStart](); // no context or args..
+						try { fq[fqStart]() } // no context or args..
+						catch(err) { if(global.console) global.console.error(err) }
 						fq[fqStart++] = _undefined	// increase start pointer and dereference function just called
 						if(fqStart == bufferSize)
 						{
@@ -160,8 +161,8 @@
 									rejectClient(clients[n],reason);
 							});
 					else
-						if(!Zousan.suppressUncaughtRejectionError)
-							console.log("You upset Zousan. Please catch rejections: ",reason,reason.stack);
+						if(!Zousan.suppressUncaughtRejectionError && global.console)
+							global.console.log("You upset Zousan. Please catch rejections: ", reason,reason ? reason.stack : null)
 				},
 
 				then: function(onF,onR)
