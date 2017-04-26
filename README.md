@@ -26,7 +26,7 @@ Zousan is defined as a UMD (Universal Module Definition), compliant with AMD and
 
 Zousan is [Promise A+ 1.1](http://promises-aplus.github.com/promises-spec) compliant, so  any documentation for spec-compliant promises applies to Zousan. There are a couple small additions though - see below.  Briefly, the spec-compliant API is:
 
-###Constructor
+### Constructor
 
 Create a new Promise (often, this promise is returned from a function that provides some asynchronous resource)
 
@@ -43,7 +43,7 @@ Create a new Promise (often, this promise is returned from a function that provi
 
 ----------
 
-###then()
+### then()
 
 To use this promise to obtain the value:
 
@@ -63,7 +63,7 @@ To use this promise to obtain the value:
 
 Zousan does have a couple additional features which are not required by the spec, but are very useful when working with promises. Be aware that if you use this "extension" API, your code may not be compatible with other Promise implementations:
 
-###catch(onRejected)
+### catch(onRejected)
 
 ```catch(onRejected)``` is equivalent to ```then(undefined, onRejected)``` and is just easier to identify - allowing you to adopt the pattern of always ending *then chains* with a catch, like so:
 
@@ -96,7 +96,7 @@ This method is not part of the Promise A+ spec nor included in [ECMAScript2015 s
 
 -------------
 
-###all(promiseArray)
+### all(promiseArray)
 
 The other addition is a utility function called ```all()``` which takes an array of promises and returns a single promise that will resolve when all promises in the array resolve. The value passed to you is an array with the values from each promise respectively. If any promise within the passed array rejects, this will reject with the same error as the original rejection.
 
@@ -121,7 +121,7 @@ This function is also present in the [ECMAScript 2015 spec](http://www.ecma-inte
 
 -------------
 
-###timeout(ms[,msg])
+### timeout(ms[,msg])
 
 This method returns a new promise based on the original that times out (rejects with `Error("Timeout")` or if specified `Error(msg)`) if the original promise does not resolve or reject before the time specified (in milliseconds).
 
@@ -155,7 +155,7 @@ This method returns a new promise based on the original that times out (rejects 
 
 ---------
 
-###Convenience resolve() / reject() as Instance Methods
+### Convenience resolve() / reject() as Instance Methods
 
 The spec-compliant manner of resolving/rejecting a promise is to call the methods handed back to the constructor function argument, as shown in the constructor example above. Often it is more convenient (or cleaner) to resolve/reject a promise outside the constructor. For this purpose, Zousan provides resolve and reject methods right on the promise instance. So this pattern is available:
 
@@ -169,7 +169,7 @@ The spec-compliant manner of resolving/rejecting a promise is to call the method
 
 -----------
 
-###Convenience utility method to create Resolved or Rejected Promises
+### Convenience utility method to create Resolved or Rejected Promises
 
 These functions create new promises and resolve or reject them with values or errors all in one convenient step.
 
@@ -196,7 +196,7 @@ To create a promise and *resolve* or *reject* it immediately:
 
 -----------
 
-###suppressUncaughtRejectionError flag
+### suppressUncaughtRejectionError flag
 
 By default, Zousan will log a message to the console if a promise is rejected and that rejection is not "caught". Generally, it is best to use the ```catch()``` pattern shown above, which will ensure all rejections are handled. If you forget, you will upset Zousan, and he will remind you.
 
