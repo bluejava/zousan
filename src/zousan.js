@@ -1,7 +1,7 @@
 // zousan - A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation
 // https://github.com/bluejava/zousan
 // Author: Glenn Crownover <glenn@bluejava.com> (http://www.bluejava.com)
-// Version 2.3.5
+// Version 2.4.0
 // License: MIT
 
 /* jshint asi: true, browser: true */
@@ -63,7 +63,11 @@
 							return function() { dd.setAttribute("a",0); } // trigger callback to
 						}
 
-						// if No MutationObserver - this is the next best thing - handles Node and MSIE
+						// if No MutationObserver - this is the next best thing for Node
+						if(typeof process !== _undefinedString && typeof process.nextTick === "function")
+							return function() { process.nextTick(callQueue) }
+
+						// if No MutationObserver - this is the next best thing for MSIE
 						if(typeof setImmediate !== _undefinedString)
 							return function() { setImmediate(callQueue) }
 
