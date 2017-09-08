@@ -79,7 +79,7 @@ This pattern helps you to remember to always catch any errors produced within yo
 
 -------------
 
-###finally(fn)
+### finally(fn)
 
 ```finally(fn)``` is equivalent to ```then(fn, fn)``` and is a convenience method for handling both resolved and rejected promises with a single handler. More important than being "convenient" is it is clear in intent - that this function will be run regardless. It is useful in promise chains that require some kind of clean-up operation such as releasing resources:
 
