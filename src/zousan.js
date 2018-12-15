@@ -91,6 +91,7 @@
 			//  this.state = STATE_PENDING;	// Inital state (PENDING is undefined, so no need to actually have this assignment)
 			//this.c = [];			// clients added while pending.   <Since 1.0.2 this is lazy instantiation>
 
+			// If Zousan is called without "new", throw an error
 			if (!(this instanceof Zousan)) throw new TypeError("Zousan must be created with the new keyword");
 
 			// If a function was specified, call it back with the resolve/reject functions bound to this context
@@ -108,6 +109,7 @@
 					me.reject(e);
 				}
 			}
+			// If an argument was specified and it is not a function, throw an error
 			else if(arguments.length > 0)
 			{
 				throw new TypeError("Promise resolver " + func + " is not a function");
