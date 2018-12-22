@@ -106,7 +106,7 @@
 				}
 				catch(e)
 				{
-					me.reject(e);
+					rejectWithErrorSuppression(me,e);
 				}
 			}
 			else if(arguments.length > 0) // If an argument was specified and it is not a function, throw an error
@@ -229,6 +229,15 @@
 
 			}; // END of prototype function list
 
+		function rejectWithErrorSuppression(p,reason)
+		{
+			var flag = Zousan.suppressUncaughtRejectionError; // Save the current state of the flag for suppressing uncaught rejection errors
+
+			Zousan.suppressUncaughtRejectionError = true;
+			p.reject(reason);
+			Zousan.suppressUncaughtRejectionError = flag;
+		}
+
 		function resolveClient(c,arg)
 		{
 			if(typeof c.y === "function")
@@ -262,7 +271,7 @@
 
 		Zousan.resolve = function(val) { var z = new Zousan(); z.resolve(val); return z; }
 
-		Zousan.reject = function(err) { var z = new Zousan(); z.reject(err); return z; }
+		Zousan.reject = function(err) { var z = new Zousan(); rejectWithErrorSuppression(z,err); return z; }
 
 		Zousan.all = function(pa)
 		{
