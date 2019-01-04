@@ -203,7 +203,7 @@
 						var s = this.state, a = this.v;
 
 						if(typeof onR === "function")
-							this.handled = true; // set promise as "handled" to suppress warning for unhandled promises
+							this.handled = true; // set promise as "handled" to suppress warning for unhandled rejections
 
 						soon(function() { // we are not pending, so yield script and resolve/reject as needed
 								if(s === STATE_FULFILLED)
