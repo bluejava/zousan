@@ -1,7 +1,7 @@
 // zousan - A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation
 // https://github.com/bluejava/zousan
 // Author: Glenn Crownover <glenn@bluejava.com> (http://www.bluejava.com)
-// Version 2.4.0
+// Version 2.4.1
 // License: MIT
 
 /* jshint asi: true, browser: true */
@@ -252,7 +252,12 @@
 
 		Zousan.resolve = function(val) { var z = new Zousan(); z.resolve(val); return z; }
 
-		Zousan.reject = function(err) { var z = new Zousan(); z.reject(err); return z; }
+		Zousan.reject = function(err) {
+				var z = new Zousan()
+				z.c=[] // see https://github.com/bluejava/zousan/issues/7#issuecomment-415394963
+				z.reject(err)
+				return z
+			}
 
 		Zousan.all = function(pa)
 		{
