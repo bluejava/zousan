@@ -9,9 +9,10 @@
 	"main": "zousanTest.js",
 	"scripts":
 	{
-		"test": "npm run testAPlus; npm run testExtensions",
+		"test": "npm run testAPlus && npm run testExtensions && npm run rejects",
 		"testAPlus": "node zousanTest.js",
-		"testExtensions": "mocha extensions"
+		"testExtensions": "mocha extensions",
+		"rejects": "mocha rejectTests"
 	},
 	"repository" :
 	{

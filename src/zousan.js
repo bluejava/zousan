@@ -1,7 +1,7 @@
 // zousan - A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation
 // https://github.com/bluejava/zousan
 // Author: Glenn Crownover <glenn@bluejava.com> (http://www.bluejava.com)
-// Version 2.4.1
+// Version 2.5.0
 // License: MIT
 
 /* jshint asi: true, browser: true */
@@ -184,7 +184,7 @@
 						soon(function() {
 							if(!me.handled) {
 								if(!Zousan.suppressUncaughtRejectionError && global.console)
-									global.console.log("You upset Zousan. Please catch rejections: ", reason,reason ? reason.stack : null)
+									Zousan.warn("You upset Zousan. Please catch rejections: ", reason,reason ? reason.stack : null)
 							}
 						});
 				},
@@ -206,8 +206,8 @@
 					{
 						var s = this.state, a = this.v;
 
-						if(typeof onR === "function")
-							this.handled = true; // set promise as "handled" to suppress warning for unhandled rejections
+						// In the case that the original promise is already fulfilled, any uncaught rejection should already have been warned about
+						this.handled = true; // set promise as "handled" to suppress warning for unhandled rejections
 
 						soon(function() { // we are not pending, so yield script and resolve/reject as needed
 								if(s === STATE_FULFILLED)
@@ -306,6 +306,8 @@
 
 			return retP;
 		}
+
+		Zousan.warn = console.warn
 
 		// If this appears to be a commonJS environment, assign Zousan as the module export
 		if(typeof module != _undefinedString && module.exports)		// jshint ignore:line

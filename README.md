@@ -35,9 +35,9 @@ Create a new Promise (often, this promise is returned from a function that provi
 		// ... perform some asynchronous operation ...
 		//  load the value to return into "value"
 		if(success)
-			resolve(value);
+			resolve(value)
 		else
-			reject(Error("error message goes here"));
+			reject(Error("error message goes here"))
 	});
 ```
 
@@ -54,7 +54,7 @@ To use this promise to obtain the value:
 		}, function(err) { // this function is called when promise is rejected
 		// bummer...
 
-	});
+	})
 ```
 
 --------
@@ -108,13 +108,13 @@ For example, to obtain data from a list of sources:
 
 ```javascript
 	// define an array with our data locations
-	var sources = ["data1.json", "data2.json", "data3.json"];
+	var sources = ["data1.json", "data2.json", "data3.json"]
 
 	// Next, obtain an array of promises using hypothetical getJSON function
-	var dataProm = sources.map(getJSON);
+	var dataProm = sources.map(getJSON)
 
 	// When all promises resolve, we call processData with array of results
-	Zousan.all(dataProm).then(processData, reportError);
+	Zousan.all(dataProm).then(processData, reportError)
 ```
 
 This function is also present in the [ECMAScript 2015 spec](http://www.ecma-international.org/ecma-262/6.0/#sec-promise.all).
@@ -127,8 +127,8 @@ This method returns a new promise based on the original that times out (rejects 
 
 ```javascript
 	// Create a new promise that times out after 3 seconds
-	var prom = new Zousan().timeout(3000);
-	prom.then(doit,problem);
+	var prom = new Zousan().timeout(3000)
+	prom.then(doit,problem)
 ```
 
 **Note:** This has no effect on the original promise - which may still resolve/reject at a later time. This pattern allows you to create a timeout promise against any existing promise, such as one returned from an API, without disturbing the original promise:
@@ -160,11 +160,11 @@ This method returns a new promise based on the original that times out (rejects 
 The spec-compliant manner of resolving/rejecting a promise is to call the methods handed back to the constructor function argument, as shown in the constructor example above. Often it is more convenient (or cleaner) to resolve/reject a promise outside the constructor. For this purpose, Zousan provides resolve and reject methods right on the promise instance. So this pattern is available:
 
 ```javascript
-	var promise = new Zousan();
+	var promise = new Zousan()
 	if(success)
-		promise.resolve(value);
+		promise.resolve(value)
 	else
-		promise.reject(Error("error message goes here"));
+		promise.reject(Error("error message goes here"))
 ```
 
 -----------
@@ -179,31 +179,41 @@ To create a promise and *resolve* or *reject* it immediately:
 
 ```javascript
 	// Create a promise and resolve it immediately with the value 100
-	var resolvedPromise = Zousan.resolve(100);
+	var resolvedPromise = Zousan.resolve(100)
 
 	// --- Note: The above is equivalent to the following: ---
-	var resolvedPromise2 = new Zousan();
-	resolvedPromise2.resolve(100);
+	var resolvedPromise2 = new Zousan()
+	resolvedPromise2.resolve(100)
 
 	// --- or, the following ---
 	var resolvedPromise3 = new Zousan(function(res,rej) {
-			res(100);
+			res(100)
 		});
 
 	// Create a promise and reject it immediately with the stated error
-	var rejectedPromise = Zousan.reject(Error("Security Error"));
+	var rejectedPromise = Zousan.reject(Error("Security Error"))
 ```
 
 -----------
 
-### suppressUncaughtRejectionError flag
+### Uncaught Rejections Warning
 
-By default, Zousan will log a message to the console if a promise is rejected and that rejection is not "caught". Generally, it is best to use the ```catch()``` pattern shown above, which will ensure all rejections are handled. If you forget, you will upset Zousan, and he will remind you.
+By default, Zousan will log a warning message to the console if a promise is rejected and that rejection is not "caught". Generally, it is best to use the ```catch()``` pattern shown above, which will ensure all rejections are handled. If you forget, you will upset Zousan, and he will remind you.
+
+Zousan assigns `Zousan.warn` to `console.warn` and uses that to log the uncaught rejection message. You may use an alternate handler for these warnings by assigning `Zousan.warn` to the function of your choice.
 
 If you wish to suppress this warning, you can turn it off globally via:
 
 ```javascript
-	Zousan.suppressUncaughtRejectionError = true;
+	Zousan.warn = function() { }
+```
+
+You may also suppress the warning for a specific promise by setting the promise's `handled` property to `true`:
+
+```javascript
+	const p = new Zousan()
+	p.handled = true // don't warn when we reject this
+	p.reject(123)
 ```
 
 ## FAQ
