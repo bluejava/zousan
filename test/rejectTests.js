@@ -3,7 +3,7 @@
 	developers are properly warned when a rejected promise is not caught.
 */
 
-const Zousan = require("../src/zousan.js")
+const Zousan = require("..")
 const assert = require('assert')
 
 let warningCount = 0, resCount = 0, rejCount = 0

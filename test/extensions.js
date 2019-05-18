@@ -4,7 +4,7 @@
 // Tests extensions specified in API but not tested in A+
 
 var assert = require('assert');	// jshint ignore: line
-var Zousan = require("../src/zousan.js");
+var Zousan = require("..");
 
 // Uncaught rejections occur within these tests as part of testing, so no need to report the error
 Zousan.suppressUncaughtRejectionError = true;

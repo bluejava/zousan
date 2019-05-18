@@ -9,7 +9,7 @@
 */
 
 var promisesAplusTests = require("promises-aplus-tests");
-var Zousan = require("../src/zousan.js");
+var Zousan = require("..");
 
 // By default, Zousan alerts you to uncaught rejections - a friendly heads-up
 // But this compliance test it is purposeful, and not something to be "corrected" - so lets suppress the error

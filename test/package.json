@@ -1,26 +1,29 @@
 {
 	"name": "zousan-compliance-testing",
 	"description": "Promises/A+ Compliance Testing for Zousan",
-	"keywords": ["promises", "promises-aplus"],
-	"version": "1.2.1",
-	"implements": ["Zousan-Compliance-Testing"],
+	"keywords": [
+		"promises",
+		"promises-aplus"
+	],
+	"version": "2.0.0",
+	"implements": [
+		"Zousan-Compliance-Testing"
+	],
 	"author": "Glenn Crownover <glenn@bluejava.com> (http://bluejava.com)",
 	"license": "MIT",
 	"main": "zousanTest.js",
-	"scripts":
-	{
+	"scripts": {
 		"test": "npm run testAPlus && npm run testExtensions && npm run rejects",
 		"testAPlus": "node zousanTest.js",
 		"testExtensions": "mocha extensions",
 		"rejects": "mocha rejectTests"
 	},
-	"repository" :
-	{
-		"type" : "git",
-		"url" : "https://github.com/bluejava/zousan.git"
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/bluejava/zousan.git"
 	},
 	"dependencies": {
-	"promises-aplus-tests": "*",
-	"mocha": "*"
+		"promises-aplus-tests": "*",
+		"mocha": "*"
 	}
 }

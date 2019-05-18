@@ -20,9 +20,11 @@ Check out this blog post called [A Promising Start - Embracing Speed and Eleganc
 
 **Update:** There is now an extension library with some handy functions for dealing with Promises (from Zousan or otherwise): [Zousan-plus](https://github.com/bluejava/zousan-plus) 🐘➕
 
+**2019 Update:** As of version 3.0.0 we no longer define Zousan at the global level by default. (The exception being if you import the UMD version via `script` element without AMD present.)
+
 ## Usage
 
-Zousan is defined as a UMD (Universal Module Definition), compliant with AMD and CommonJS module styles, as well as simple browser script includes which define `Zousan` globally.
+Zousan is distributed both as an ES Module and as a UMD (Universal Module Definition), compliant with AMD and CommonJS module styles, as well as simple browser script includes which define `Zousan` globally.
 
 Zousan is [Promise A+ 1.1](http://promises-aplus.github.com/promises-spec) compliant, so  any documentation for spec-compliant promises applies to Zousan. There are a couple small additions though - see below.  Briefly, the spec-compliant API is:
 
