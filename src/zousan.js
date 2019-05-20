@@ -3,6 +3,14 @@
 // Author: Glenn Crownover <glenn@bluejava.com> (http://www.bluejava.com)
 // License: MIT
 
+var globalThis = (typeof self === 'object')
+		? self
+		: (typeof window === 'object')
+			? window
+			: (typeof global === 'object')
+				? global
+				: this;
+
 var STATE_PENDING,					// These are the three possible states (PENDING remains undefined - as intended)
 	STATE_FULFILLED = "fulfilled",		// a promise can be in.  The state is stored
 	STATE_REJECTED = "rejected",		// in this.state as read-only
@@ -30,7 +38,7 @@ var soon = (function() {
 			while(fq.length - fqStart) // this approach allows new yields to pile on during the execution of these
 			{
 				try { fq[fqStart]() } // no context or args..
-				catch(err) { if(global.console) global.console.error(err) }
+				catch(err) { if(globalThis.console) globalThis.console.error(err) }
 				fq[fqStart++] = _undefined	// increase start pointer and dereference function just called
 				if(fqStart == bufferSize)
 				{
@@ -174,7 +182,7 @@ Zousan.prototype = {	// Add 6 functions to our prototype: "resolve", "reject", "
 			else
 				soon(function() {
 					if(!me.handled) {
-						if(!Zousan.suppressUncaughtRejectionError && global.console)
+						if(!Zousan.suppressUncaughtRejectionError && globalThis.console)
 							Zousan.warn("You upset Zousan. Please catch rejections: ", reason,reason ? reason.stack : null)
 					}
 				});
