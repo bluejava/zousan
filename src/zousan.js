@@ -3,12 +3,12 @@
 // Author: Glenn Crownover <glenn@bluejava.com> (http://www.bluejava.com)
 // License: MIT
 
-var STATE_PENDING,					// These are the three possible states (PENDING remains undefined - as intended)
+const _undefined = undefined,						// let the obfiscator compress these down
+	STATE_PENDING = _undefined,					// These are the three possible states (PENDING remains undefined - as intended)
 	STATE_FULFILLED = "fulfilled",		// a promise can be in.  The state is stored
 	STATE_REJECTED = "rejected",		// in this.state as read-only
 
-	_undefined,						// let the obfiscator compress these down
-	_undefinedString = "undefined";		// by assigning them to variables (debatable "optimization")
+	_undefinedString = "undefined"		// by assigning them to variables (debatable "optimization")
 
 // See http://www.bluejava.com/4NS/Speed-up-your-Websites-with-a-Faster-setTimeout-using-soon
 // This is a very fast "asynchronous" flow control - i.e. it yields the thread and executes later,
@@ -19,39 +19,39 @@ var STATE_PENDING,					// These are the three possible states (PENDING remains u
 // 		you can starve the UI and be unresponsive to the user.
 // This is an even FASTER version of https://gist.github.com/bluejava/9b9542d1da2a164d0456 that gives up
 // passing context and arguments, in exchange for a 25x speed increase. (Use anon function to pass context/args)
-var soon = (function() {
+const soon = (() => {
 
-		var	fq = [], // function queue;
-			fqStart = 0, // avoid using shift() by maintaining a start pointer - and remove items in chunks of 1024 (bufferSize)
+		const fq = [],  // function queue
 			bufferSize = 1024
+		let fqStart = 0 // avoid using shift() by maintaining a start pointer - and remove items in chunks of 1024 (bufferSize)
 
 		function callQueue()
 		{
 			while(fq.length - fqStart) // this approach allows new yields to pile on during the execution of these
 			{
 				try { fq[fqStart]() } // no context or args..
-				catch(err) { if(global.console) global.console.error(err) }
+				catch(err) { Zousan.error(err) }
 				fq[fqStart++] = _undefined	// increase start pointer and dereference function just called
 				if(fqStart == bufferSize)
 				{
-					fq.splice(0,bufferSize);
-					fqStart = 0;
+					fq.splice(0,bufferSize)
+					fqStart = 0
 				}
 			}
 		}
 
 		// run the callQueue function asyncrhonously, as fast as possible
-		var cqYield = (function() {
+		const cqYield = (() => {
 
 				// This is the fastest way browsers have to yield processing
 				if(typeof MutationObserver !== _undefinedString)
 				{
 					// first, create a div not attached to DOM to "observe"
-					var dd = document.createElement("div");
-					var mo = new MutationObserver(callQueue);
-					mo.observe(dd, { attributes: true });
+					const dd = document.createElement("div")
+					const mo = new MutationObserver(callQueue)
+					mo.observe(dd, { attributes: true })
 
-					return function() { dd.setAttribute("a",0); } // trigger callback to
+					return function() { dd.setAttribute("a",0) } // trigger callback to
 				}
 
 				// if No MutationObserver - this is the next best thing for Node
@@ -64,49 +64,49 @@ var soon = (function() {
 
 				// final fallback - shouldn't be used for much except very old browsers
 				return function() { setTimeout(callQueue,0) }
-			})();
+			})()
 
 		// this is the function that will be assigned to soon
 		// it takes the function to call and examines all arguments
-		return function(fn) {
+		return fn => {
 
 				// push the function and any remaining arguments along with context
-				fq.push(fn);
+				fq.push(fn)
 
 				if((fq.length - fqStart) == 1) // upon adding our first entry, kick off the callback
-					cqYield();
-			};
+					cqYield()
+			}
 
-	})();
+	})()
 
 // -------- BEGIN our main "class" definition here -------------
 
 function Zousan(func)
 {
 	//  this.state = STATE_PENDING;	// Inital state (PENDING is undefined, so no need to actually have this assignment)
-	//this.c = [];			// clients added while pending.   <Since 1.0.2 this is lazy instantiation>
+	//this.c = []			// clients added while pending.   <Since 1.0.2 this is lazy instantiation>
 
 	// If Zousan is called without "new", throw an error
-	if (!(this instanceof Zousan)) throw new TypeError("Zousan must be created with the new keyword");
+	if (!(this instanceof Zousan)) throw new TypeError("Zousan must be created with the new keyword")
 
 	// If a function was specified, call it back with the resolve/reject functions bound to this context
 	if(typeof func === "function")
 	{
-		var me = this;
+		const me = this
 		try
 		{
 			func(
-				function(arg) { me.resolve(arg) },	// the resolve function bound to this context.
-				function(arg) { me.reject(arg) })	// the reject function bound to this context
+				arg => me.resolve(arg), // the resolve function bound to this context. (actually using bind() is slower)
+				arg => me.reject(arg))  // the reject function bound to this context
 		}
 		catch(e)
 		{
-			me.reject(e);
+			me.reject(e)
 		}
 	}
 	else if(arguments.length > 0) // If an argument was specified and it is NOT a function, throw an error
 	{
-		throw new TypeError("Zousan resolver " + func + " is not a function");
+		throw new TypeError("Zousan resolver " + func + " is not a function")
 	}
 }
 
@@ -115,137 +115,137 @@ Zousan.prototype = {	// Add 6 functions to our prototype: "resolve", "reject", "
 		resolve: function(value)
 		{
 			if(this.state !== STATE_PENDING)
-				return;
+				return
 
 			if(value === this)
-				return this.reject(new TypeError("Attempt to resolve promise with self"));
+				return this.reject(new TypeError("Attempt to resolve promise with self"))
 
-			var me = this; // preserve this
+			const me = this // preserve this
 
 			if(value && (typeof value === "function" || typeof value === "object"))
 			{
+				let first = true // first time through?
 				try
 				{
-					var first = true; // first time through?
-					var then = value.then;
+					const then = value.then
 					if(typeof then === "function")
 					{
 						// and call the value.then (which is now in "then") with value as the context and the resolve/reject functions per thenable spec
 						then.call(value,
-							function(ra) { if(first) { first=false; me.resolve(ra);}  },
-							function(rr) { if(first) { first=false; me.reject(rr); } });
-						return;
+							function(ra) { if(first) { first=false; me.resolve(ra)}  },
+							function(rr) { if(first) { first=false; me.reject(rr) } })
+						return
 					}
 				}
 				catch(e)
 				{
 					if(first)
-						this.reject(e);
-					return;
+						this.reject(e)
+					return
 				}
 			}
 
-			this.state = STATE_FULFILLED;
-			this.v = value;
+			this.state = STATE_FULFILLED
+			this.v = value
 
 			if(me.c)
 				soon(function() {
-						for(var n=0, l=me.c.length;n<l;n++)
-							resolveClient(me.c[n],value);
-					});
+						for(let n=0, l=me.c.length;n<l;n++)
+							resolveClient(me.c[n],value)
+					})
 		},
 
 		reject: function(reason)
 		{
 			if(this.state !== STATE_PENDING)
-				return;
+				return
 
-			var me = this; // preserve this
+			const me = this // preserve this
 
-			this.state = STATE_REJECTED;
-			this.v = reason;
+			this.state = STATE_REJECTED
+			this.v = reason
 
-			var clients = this.c;
+			const clients = this.c
 			if(clients)
 				soon(function() {
-						for(var n=0, l=clients.length;n<l;n++)
-							rejectClient(clients[n],reason);
-					});
+						for(let n=0, l=clients.length;n<l;n++)
+							rejectClient(clients[n],reason)
+					})
 			else
 				soon(function() {
 					if(!me.handled) {
-						if(!Zousan.suppressUncaughtRejectionError && global.console)
+						if(!Zousan.suppressUncaughtRejectionError)
 							Zousan.warn("You upset Zousan. Please catch rejections: ", reason,reason ? reason.stack : null)
 					}
-				});
+				})
 		},
 
 		then: function(onF,onR)
 		{
-			var p = new Zousan();
-			var client = {y:onF,n:onR,p:p};
+			const p = new Zousan()
+			const client = {y:onF,n:onR,p:p}
 
 			if(this.state === STATE_PENDING)
 			{
 					// we are pending, so client must wait - so push client to end of this.c array (create if necessary for efficiency)
 				if(this.c)
-					this.c.push(client);
+					this.c.push(client)
 				else
-					this.c = [client];
+					this.c = [client]
 			}
 			else // if state was NOT pending, then we can just immediately (soon) call the resolve/reject handler
 			{
-				var s = this.state, a = this.v;
+				const s = this.state, a = this.v
 
 				// In the case that the original promise is already fulfilled, any uncaught rejection should already have been warned about
-				this.handled = true; // set promise as "handled" to suppress warning for unhandled rejections
+				this.handled = true // set promise as "handled" to suppress warning for unhandled rejections
 
 				soon(function() { // we are not pending, so yield script and resolve/reject as needed
 						if(s === STATE_FULFILLED)
-							resolveClient(client,a);
+							resolveClient(client,a)
 						else
-							rejectClient(client,a);
-					});
+							rejectClient(client,a)
+					})
 			}
 
-			return p;
+			return p
 		},
 
-		"catch": function(cfn) { return this.then(null,cfn); }, // convenience method
-		"finally": function(cfn) { return this.then(cfn,cfn); }, // convenience method
+		"catch": function(cfn) { return this.then(null,cfn) }, // convenience method
+		"finally": function(cfn) { return this.then(cfn,cfn) }, // convenience method
 
 		// new for 1.2  - this returns a new promise that times out if original promise does not resolve/reject before the time specified.
 		// Note: this has no effect on the original promise - which may still resolve/reject at a later time.
 		"timeout" : function(ms,timeoutMsg)
 		{
 			timeoutMsg = timeoutMsg || "Timeout"
-			var me = this;
+			const me = this
 			return new Zousan(function(resolve,reject) {
 
 					setTimeout(function() {
-							reject(Error(timeoutMsg));	// This will fail silently if promise already resolved or rejected
-						}, ms);
+							reject(Error(timeoutMsg))	// This will fail silently if promise already resolved or rejected
+						}, ms)
 
 					me.then(function(v) { resolve(v) },		// This will fail silently if promise already timed out
-							function(er) { reject(er) });		// This will fail silently if promise already timed out
+							function(er) { reject(er) })		// This will fail silently if promise already timed out
 
 				})
 		}
 
-	}; // END of prototype function list
+	} // END of prototype function list
 
 function resolveClient(c,arg)
 {
 	if(typeof c.y === "function")
 	{
 		try {
-				var yret = c.y.call(_undefined,arg);
-				c.p.resolve(yret);
+				const yret = c.y.call(_undefined,arg)
+				c.p.resolve(yret)
 			}
 		catch(err) { c.p.reject(err) }
 	}
 	else
-		c.p.resolve(arg); // pass this along...
+		c.p.resolve(arg) // pass this along...
 }
 
 function rejectClient(c,reason)
@@ -254,21 +254,21 @@ function rejectClient(c,reason)
 	{
 		try
 		{
-			var yret = c.n.call(_undefined,reason);
-			c.p.resolve(yret);
+			const yret = c.n.call(_undefined,reason)
+			c.p.resolve(yret)
 		}
 		catch(err) { c.p.reject(err) }
 	}
 	else
-		c.p.reject(reason); // pass this along...
+		c.p.reject(reason) // pass this along...
 }
 
 // "Class" functions follow (utility functions that live on the Zousan function object itself)
 
-Zousan.resolve = function(val) { var z = new Zousan(); z.resolve(val); return z; }
+Zousan.resolve = val => new Zousan(resolve => resolve(val))
 
 Zousan.reject = function(err) {
-		var z = new Zousan()
+		const z = new Zousan()
 		z.c=[] // see https://github.com/bluejava/zousan/issues/7#issuecomment-415394963
 		z.reject(err)
 		return z
@@ -276,29 +276,33 @@ Zousan.reject = function(err) {
 
 Zousan.all = function(pa)
 {
-	var results = [ ], rc = 0, retP = new Zousan(); // results and resolved count
+	const results = [ ], retP = new Zousan() // results and final return promise
+	let rc = 0 // resolved count
 
 	function rp(p,i)
 	{
 		if(!p || typeof p.then !== "function")
-			p = Zousan.resolve(p);
+			p = Zousan.resolve(p)
 		p.then(
-				function(yv) { results[i] = yv; rc++; if(rc == pa.length) retP.resolve(results); },
-				function(nv) { retP.reject(nv); }
-			);
+				function(yv) { results[i] = yv; rc++; if(rc == pa.length) retP.resolve(results) },
+				function(nv) { retP.reject(nv) }
+			)
 	}
 
-	for(var x=0;x<pa.length;x++)
-		rp(pa[x],x);
+	for(let x=0;x<pa.length;x++)
+		rp(pa[x],x)
 
 	// For zero length arrays, resolve immediately
 	if(!pa.length)
-		retP.resolve(results);
+		retP.resolve(results)
 
-	return retP;
+	return retP
 }
 
-Zousan.warn = console.warn
+// If we have a console, use it for our errors and warnings, else do nothing (either/both can be overwritten)
+const nop = () => { }
+Zousan.warn = typeof console !== _undefinedString ? console.warn : nop
+Zousan.error = typeof console !== _undefinedString ? console.error : nop
 
 // make soon accessable from Zousan
 Zousan.soon = soon
