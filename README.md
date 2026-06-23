@@ -24,7 +24,7 @@ Check out this blog post called [A Promising Start - Embracing Speed and Eleganc
 
 ## Usage
 
-Zousan is distributed both as an ES Module and as a UMD (Universal Module Definition), compliant with AMD and CommonJS module styles, as well as simple browser script includes which define `Zousan` globally.
+Zousan is distributed with an ES Module source entry for modern bundlers and a minified UMD/CommonJS bundle for CommonJS consumers.
 
 Zousan is [Promise A+ 1.1](http://promises-aplus.github.com/promises-spec) compliant, so  any documentation for spec-compliant promises applies to Zousan. There are a couple small additions though - see below.  Briefly, the spec-compliant API is:
 
@@ -83,7 +83,7 @@ This pattern helps you to remember to always catch any errors produced within yo
 
 ### finally(fn)
 
-```finally(fn)``` is equivalent to ```then(fn, fn)``` and is a convenience method for handling both resolved and rejected promises with a single handler. More important than being "convenient" is it is clear in intent - that this function will be run regardless. It is useful in promise chains that require some kind of clean-up operation such as releasing resources:
+```finally(fn)``` is a convenience method for handling both resolved and rejected promises with a single handler. More important than being "convenient" is it is clear in intent - that this function will be run regardless. It is useful in promise chains that require some kind of clean-up operation such as releasing resources:
 
 ```javascript
 	getJSON("data.json") 		// hypothetical function which returns a promise
@@ -94,7 +94,7 @@ This pattern helps you to remember to always catch any errors produced within yo
 		.finally(cleanup)		// Release resources, stop spinner, etc.
 ```
 
-This method is not part of the Promise A+ spec nor included in [ECMAScript2015 spec](http://www.ecma-international.org/ecma-262/6.0/#sec-promise-constructor)
+This method follows native `Promise.prototype.finally()` behavior: the original fulfillment value or rejection reason is preserved unless the `finally` handler throws or returns a rejected promise.
 
 -------------
 

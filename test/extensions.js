@@ -215,6 +215,65 @@ describe("Zousan extension testing", function() {
 						})
 				})
 
+			it("preserves the original resolution value", function(done) {
+					Zousan.resolve("original").finally(function() {
+							return "cleanup"
+						}).then(function(value) {
+							assert.equal(value,"original")
+							done()
+						}).catch(done)
+				})
+
+			it("preserves the original rejection reason", function(done) {
+					var original = Error("original")
+
+					Zousan.reject(original).finally(function() {
+							return "cleanup"
+						}).then(function() {
+							done(Error("Should not resolve in this case"))
+						}).catch(function(reason) {
+							assert.equal(reason,original)
+							done()
+						})
+				})
+
+			it("rejects with errors thrown by the finally handler", function(done) {
+					var cleanupError = Error("cleanup")
+
+					Zousan.resolve("original").finally(function() {
+							throw cleanupError
+						}).then(function() {
+							done(Error("Should not resolve in this case"))
+						}).catch(function(reason) {
+							assert.equal(reason,cleanupError)
+							done()
+						})
+				})
+
+			it("rejects with errors returned by the finally handler", function(done) {
+					var cleanupError = Error("cleanup")
+
+					Zousan.resolve("original").finally(function() {
+							return Zousan.reject(cleanupError)
+						}).then(function() {
+							done(Error("Should not resolve in this case"))
+						}).catch(function(reason) {
+							assert.equal(reason,cleanupError)
+							done()
+						})
+				})
+
+			it("preserves rejection when finally has no function", function(done) {
+					var original = Error("original")
+
+					Zousan.reject(original).finally().then(function() {
+							done(Error("Should not resolve in this case"))
+						}).catch(function(reason) {
+							assert.equal(reason,original)
+							done()
+						})
+				})
+
 			})
 
 	})

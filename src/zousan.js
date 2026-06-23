@@ -212,7 +212,14 @@ Zousan.prototype = {	// Add 6 functions to our prototype: "resolve", "reject", "
 		},
 
 		"catch": function(cfn) { return this.then(null,cfn) }, // convenience method
-		"finally": function(cfn) { return this.then(cfn,cfn) }, // convenience method
+		"finally": function(cfn) {
+			if(typeof cfn !== "function")
+				return this.then(cfn,cfn)
+
+			return this.then(
+					function(value) { return Zousan.resolve(cfn()).then(function() { return value }) },
+					function(reason) { return Zousan.resolve(cfn()).then(function() { throw reason }) })
+		}, // convenience method
 
 		// new for 1.2  - this returns a new promise that times out if original promise does not resolve/reject before the time specified.
 		// Note: this has no effect on the original promise - which may still resolve/reject at a later time.

@@ -15,15 +15,20 @@
 	"scripts": {
 		"test": "npm run testAPlus && npm run testExtensions && npm run rejects",
 		"testAPlus": "node zousanTest.js",
-		"testExtensions": "mocha extensions",
-		"rejects": "mocha rejectTests"
+		"testExtensions": "mocha extensions.js",
+		"rejects": "mocha rejectTests.js"
 	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/bluejava/zousan.git"
 	},
-	"dependencies": {
-		"promises-aplus-tests": "*",
-		"mocha": "*"
+	"devDependencies": {
+		"mocha": "11.3.0",
+		"promises-aplus-tests": "^2.1.2"
+	},
+	"overrides": {
+		"mocha": "11.3.0",
+		"serialize-javascript": "^7.0.5",
+		"underscore": "npm:lodash@^4.17.21"
 	}
 }

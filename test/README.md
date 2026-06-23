@@ -13,6 +13,6 @@ npm test
 or, from the test directory:
 
 ```shell
-npm install
-node zousanTest.js
+npm ci
+npm test
 ```

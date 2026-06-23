@@ -1,34 +1,45 @@
 {
 	"name": "zousan",
-	"version": "3.0.1",
+	"version": "4.0.0",
 	"description": "A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation",
-	"main": "zousan-min.js",
-	"module": "zousan-esm-min.js",
-	"directories": {
-		"test": "test"
-	},
-	"scripts": {
-		"test": "cd test && npm install && npm test",
-		"buildUMD": "rollup src/zousan.js --format umd --name Zousan | uglifyjs -m -c > zousan-min.js",
-		"buildESM": "uglifyjs -m -c < src/zousan.js > zousan-esm-min.js",
-		"build": "npm run buildUMD && npm run buildESM"
+	"keywords": [
+		"promises-aplus",
+		"promise"
+	],
+	"homepage": "https://github.com/bluejava/zousan#readme",
+	"bugs": {
+		"url": "https://github.com/bluejava/zousan/issues"
 	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/bluejava/zousan.git"
 	},
-	"keywords": [
-		"promises-aplus",
-		"promise"
-	],
-	"devDependencies": {
-		"rollup": "^1.12.0",
-		"uglify-es": "mishoo/UglifyJS2#harmony"
-	},
-	"author": "Glenn Crownover <glenn@bluejava.com> (http://www.bluejava.com)",
 	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/bluejava/zousan/issues"
+	"author": "Glenn Crownover <glenn@bluejava.com> (http://www.bluejava.com)",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": "./src/zousan.js",
+			"require": "./zousan-min.cjs"
+		}
 	},
-	"homepage": "https://github.com/bluejava/zousan#readme"
+	"main": "./zousan-min.cjs",
+	"module": "./src/zousan.js",
+	"directories": {
+		"test": "test"
+	},
+	"files": [
+		"CHANGELOG.md",
+		"src/zousan.js",
+		"zousan-min.cjs"
+	],
+	"scripts": {
+		"build": "node scripts/build.cjs",
+		"prepack": "npm run build",
+		"test": "npm ci --prefix test && npm test --prefix test"
+	},
+	"devDependencies": {
+		"rollup": "^4.62.2",
+		"terser": "^5.48.0"
+	}
 }
