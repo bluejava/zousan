@@ -1,6 +1,6 @@
 {
 	"name": "zousan",
-	"version": "4.0.0",
+	"version": "4.0.1",
 	"description": "A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation",
 	"keywords": [
 		"promises-aplus",
@@ -41,5 +41,6 @@
 	"devDependencies": {
 		"rollup": "^4.62.2",
 		"terser": "^5.48.0"
-	}
+	},
+	"packageManager": "npm@10.8.1"
 }
