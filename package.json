@@ -19,10 +19,17 @@
 	"type": "module",
 	"exports": {
 		".": {
-			"import": "./src/zousan.js",
-			"require": "./zousan-min.cjs"
+			"import": {
+				"types": "./src/zousan.d.ts",
+				"default": "./src/zousan.js"
+			},
+			"require": {
+				"types": "./zousan-min.d.cts",
+				"default": "./zousan-min.cjs"
+			}
 		}
 	},
+	"types": "./src/zousan.d.ts",
 	"main": "./zousan-min.cjs",
 	"module": "./src/zousan.js",
 	"directories": {
@@ -30,7 +37,9 @@
 	},
 	"files": [
 		"CHANGELOG.md",
+		"src/zousan.d.ts",
 		"src/zousan.js",
+		"zousan-min.d.cts",
 		"zousan-min.cjs"
 	],
 	"scripts": {
