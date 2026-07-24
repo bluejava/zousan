@@ -1,5 +1,23 @@
 # Changelog
 
+## 4.1.0 - 2026-07-24
+
+### Added
+
+- Added bundled TypeScript declarations for both ESM and CommonJS consumers.
+
+### Changed
+
+- Added conditional type-resolution metadata for the package's ESM and CommonJS entry points.
+- Updated Promises/A+ and ECMAScript specification links to their canonical HTTPS URLs.
+
+## 4.0.1 - 2026-06-23
+
+### Changed
+
+- Made npm 10.8.1 the explicit package manager for the root package.
+- Replaced the root Yarn lockfile with an npm lockfile while preserving the separate npm-managed test fixture.
+
 ## 4.0.0 - 2026-06-23
 
 ### Breaking Changes
