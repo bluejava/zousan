@@ -1,4 +1,4 @@
-<a href="http://promises-aplus.github.com/promises-spec">
+<a href="https://promisesaplus.com/">
     <img src="https://promisesaplus.com/assets/logo-small.png"
          align="right" alt="Promises/A+ logo" />
 </a>
@@ -26,7 +26,7 @@ Check out this blog post called [A Promising Start - Embracing Speed and Eleganc
 
 Zousan is distributed with an ES Module source entry for modern bundlers and a minified UMD/CommonJS bundle for CommonJS consumers.
 
-Zousan is [Promise A+ 1.1](http://promises-aplus.github.com/promises-spec) compliant, so  any documentation for spec-compliant promises applies to Zousan. There are a couple small additions though - see below.  Briefly, the spec-compliant API is:
+Zousan is [Promise A+ 1.1](https://promisesaplus.com/) compliant, so  any documentation for spec-compliant promises applies to Zousan. There are a couple small additions though - see below.  Briefly, the spec-compliant API is:
 
 ### Constructor
 
@@ -77,7 +77,7 @@ Zousan does have a couple additional features which are not required by the spec
 		.catch(reportErr)		// Catch any errors occurring in any steps above.
 ```
 
-This pattern helps you to remember to always catch any errors produced within your promise chains. Although this isn't part of the Promise A+, it is a very common addition and is present in the [ECMAScript 2015 Language Specification](http://www.ecma-international.org/ecma-262/6.0/#sec-promise.prototype.catch).
+This pattern helps you to remember to always catch any errors produced within your promise chains. Although this isn't part of the Promise A+, it is a very common addition and is present in the [ECMAScript 2015 Language Specification](https://262.ecma-international.org/6.0/#sec-promise.prototype.catch).
 
 -------------
 
@@ -119,7 +119,7 @@ For example, to obtain data from a list of sources:
 	Zousan.all(dataProm).then(processData, reportError)
 ```
 
-This function is also present in the [ECMAScript 2015 spec](http://www.ecma-international.org/ecma-262/6.0/#sec-promise.all).
+This function is also present in the [ECMAScript 2015 spec](https://262.ecma-international.org/6.0/#sec-promise.all).
 
 -------------
 
