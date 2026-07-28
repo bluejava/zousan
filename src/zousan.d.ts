@@ -1,12 +1,19 @@
 /**
  * A small Promise/A+ implementation with a few convenience extensions.
  */
-export default class Zousan<T = unknown> implements PromiseLike<T>
+export default class Zousan<T = unknown> implements Promise<T>
 {
 	constructor(executor?: (
 		resolve: (value: T | PromiseLike<T>) => void,
 		reject: (reason?: any) => void
 	) => void)
+
+	/**
+	 * Present so instances satisfy `Promise<T>`, which lets a Zousan be passed
+	 * wherever a native promise is expected. Absent in environments lacking
+	 * `Symbol`, where nothing can observe it anyway.
+	 */
+	readonly [Symbol.toStringTag]: string
 
 	/**
 	 * Prevent the uncaught-rejection warning for this promise.

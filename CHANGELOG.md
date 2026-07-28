@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.2.0 - 2026-07-28
+
+### Added
+
+- Added a `Symbol.toStringTag` of `"Zousan"` to instances, so `Object.prototype.toString` reports `[object Zousan]`. TypeScript's `Promise<T>` requires this property, so a Zousan is now assignable wherever a native promise is expected. The tag is only installed where `Symbol` exists.
+
 ## 4.1.0 - 2026-07-24
 
 ### Added

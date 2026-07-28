@@ -1,6 +1,6 @@
 {
 	"name": "zousan",
-	"version": "4.1.0",
+	"version": "4.2.0",
 	"description": "A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation",
 	"keywords": [
 		"promises-aplus",

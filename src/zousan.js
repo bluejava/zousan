@@ -241,6 +241,13 @@ Zousan.prototype = {	// Add 6 functions to our prototype: "resolve", "reject", "
 
 	} // END of prototype function list
 
+// Tag instances so Object.prototype.toString reports "[object Zousan]", which also
+// makes Zousan structurally assignable to TypeScript's Promise<T> (it requires this
+// property). Guarded because goal 4 (Usable Everywhere) includes environments
+// without Symbol, such as IE.
+if(typeof Symbol === "function" && Symbol.toStringTag)
+	Zousan.prototype[Symbol.toStringTag] = "Zousan"
+
 function resolveClient(c,arg)
 {
 	if(typeof c.y === "function")
