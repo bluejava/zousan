@@ -13,9 +13,10 @@
 	"license": "MIT",
 	"main": "zousanTest.js",
 	"scripts": {
-		"test": "npm run testAPlus && npm run testExtensions && npm run rejects",
+		"test": "npm run testAPlus && npm run testExtensions && npm run testUtilities && npm run rejects",
 		"testAPlus": "node zousanTest.js",
 		"testExtensions": "mocha extensions.js",
+		"testUtilities": "mocha utilities.mjs",
 		"rejects": "mocha rejectTests.js"
 	},
 	"repository": {

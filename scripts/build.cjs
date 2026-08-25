@@ -5,6 +5,10 @@ const { minify } = require("terser")
 
 const rootDir = path.join(__dirname, "..")
 const sourcePath = path.join(rootDir, "src", "zousan.js")
+const utilityBuilds = [
+		{ source: "evaluate.js", output: "evaluate.cjs" },
+		{ source: "series.js", output: "series.cjs" }
+	]
 
 async function minifyCode(code,options)
 {
@@ -42,6 +46,33 @@ async function buildBundle()
 	}
 }
 
+async function buildUtilityBundle(sourceFile)
+{
+	const bundle = await rollup({
+			input: path.join(rootDir, "src", sourceFile),
+			external: id => id === sourcePath
+		})
+
+	try
+	{
+		const generated = await bundle.generate({
+				format: "cjs",
+				exports: "named",
+				paths: id => id === sourcePath ? "../zousan-min.cjs" : id
+			}),
+			chunk = generated.output.find(output => output.type === "chunk")
+
+		if(!chunk)
+			throw Error("Rollup produced no CommonJS utility chunk for " + sourceFile)
+
+		return minifyCode(chunk.code)
+	}
+	finally
+	{
+		await bundle.close()
+	}
+}
+
 async function replaceFile(filePath,contents)
 {
 	const tempPath = filePath + ".tmp"
@@ -52,8 +83,20 @@ async function replaceFile(filePath,contents)
 
 async function build()
 {
-	const contents = await buildBundle()
-	await replaceFile(path.join(rootDir, "zousan-min.cjs"), contents)
+	await fs.mkdir(path.join(rootDir,"dist"),{ recursive: true })
+
+	const builds = [
+			{ output: "zousan-min.cjs", contents: await buildBundle() }
+		]
+
+	for(const utility of utilityBuilds)
+		builds.push({
+				output: path.join("dist",utility.output),
+				contents: await buildUtilityBundle(utility.source)
+			})
+
+	for(const build of builds)
+		await replaceFile(path.join(rootDir, build.output), build.contents)
 }
 
 build().catch(err => {

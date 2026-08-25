@@ -1,10 +1,14 @@
 {
 	"name": "zousan",
-	"version": "4.2.0",
-	"description": "A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation",
+	"version": "4.3.0",
+	"description": "A fast, small Promise/A+ implementation with optional async workflow utilities",
 	"keywords": [
+		"async",
+		"evaluate",
 		"promises-aplus",
-		"promise"
+		"promise",
+		"series",
+		"workflow"
 	],
 	"homepage": "https://github.com/bluejava/zousan#readme",
 	"bugs": {
@@ -17,6 +21,7 @@
 	"license": "MIT",
 	"author": "Glenn Crownover <glenn@bluejava.com> (http://www.bluejava.com)",
 	"type": "module",
+	"sideEffects": false,
 	"exports": {
 		".": {
 			"import": {
@@ -26,6 +31,26 @@
 			"require": {
 				"types": "./zousan-min.d.cts",
 				"default": "./zousan-min.cjs"
+			}
+		},
+		"./series": {
+			"import": {
+				"types": "./src/series.d.ts",
+				"default": "./src/series.js"
+			},
+			"require": {
+				"types": "./dist/series.d.cts",
+				"default": "./dist/series.cjs"
+			}
+		},
+		"./evaluate": {
+			"import": {
+				"types": "./src/evaluate.d.ts",
+				"default": "./src/evaluate.js"
+			},
+			"require": {
+				"types": "./dist/evaluate.d.cts",
+				"default": "./dist/evaluate.cjs"
 			}
 		}
 	},
@@ -37,6 +62,14 @@
 	},
 	"files": [
 		"CHANGELOG.md",
+		"dist/evaluate.cjs",
+		"dist/evaluate.d.cts",
+		"dist/series.cjs",
+		"dist/series.d.cts",
+		"src/evaluate.d.ts",
+		"src/evaluate.js",
+		"src/series.d.ts",
+		"src/series.js",
 		"src/zousan.d.ts",
 		"src/zousan.js",
 		"zousan-min.d.cts",
@@ -45,7 +78,7 @@
 	"scripts": {
 		"build": "node scripts/build.cjs",
 		"prepack": "npm run build",
-		"test": "npm ci --prefix test && npm test --prefix test"
+		"test": "npm run build && npm ci --prefix test && npm test --prefix test && node scripts/test-package-exports.cjs"
 	},
 	"devDependencies": {
 		"rollup": "^4.62.2",

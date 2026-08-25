@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.3.0 - 2026-08-25
+
+### Added
+
+- Added side-effect-free `evaluate`, `evaluateResults`, and `series` utilities under focused package entrypoints.
+- Added ESM, CommonJS, and TypeScript declaration support for every utility entrypoint.
+- Added utility documentation led by the declarative `evaluate()` workflow API.
+
+### Changed
+
+- Marked the package as side-effect-free so bundlers can omit unused entrypoints.
+- Updated npm metadata to make the async workflow utilities easier to discover.
+
+### Fixed
+
+- Made the new `series()` entrypoint handle empty series and falsy first values.
+
 ## 4.2.0 - 2026-07-28
 
 ### Added

@@ -4,225 +4,264 @@
 </a>
 
 # Zousan 🐘
-A Lightning Fast, Yet Very Small Promise A+ Compliant Implementation
+A fast, small Promises/A+ implementation
 
 ---
 
-There are already several Promise implementations out there, and modern browsers even have built-in Promises, but none met my goals, which are:
+Native promises are standard today, but Zousan remains useful when size, speed, or support for older environments matters. I originally wrote it with five goals:
 
-1. **Exceedingly Fast** - it had to be the fastest possible implementation, so it could be used excessively throughout a codebase with impunity. (Even games!)
-2. **Extremely Small** - I will be using this in all my future projects, including mobile, and so fast and efficient code is essential. Also, the less code there is, the less can go wrong.
-3. **Clearly written and Documented** - I want to clearly see (and clearly demonstrate to others) how the code works, both to build confidence in its correctness, and to make it easier to fix/maintain if/when necessary.
-4. **Usable Everywhere** - I required compatibility with browsers (both new and old), mobile devices, Node and even make a best effort to work in unknown environments.
-5. **Simple Build** - No dependencies, few files, dog bone simple. (is that a phrase?)
+1. **Exceedingly fast.** It should be cheap enough to use throughout a codebase, including performance-sensitive applications such as games.
+2. **Extremely small.** Less code means smaller bundles and fewer places for bugs to hide.
+3. **Clearly written and documented.** The implementation should be understandable enough to inspect, trust, and maintain.
+4. **Usable everywhere.** It should work in browsers, Node, mobile devices, and older or unusual JavaScript environments.
+5. **Simple to build.** Few files, few dependencies, dog-bone simple. Is that a phrase?
 
-Check out this blog post called [A Promising Start - Embracing Speed and Elegance with Zousan Promises](http://www.bluejava.com/4Nc/A-Promising-Start---Embracing-Speed-and-Elegance-with-Zousan-Promises) where I describe why and how I created this implementation.
+Check out [A Promising Start: Embracing Speed and Elegance with Zousan Promises](https://www.bluejava.com/4Nc/A-Promising-Start---Embracing-Speed-and-Elegance-with-Zousan-Promises) for more about why and how I created the implementation.
 
-**Update:** There is now an extension library with some handy functions for dealing with Promises (from Zousan or otherwise): [Zousan-plus](https://github.com/bluejava/zousan-plus) 🐘➕
+Zousan also includes optional utilities for asynchronous workflows. Each utility has a separate entrypoint, so importing one does not add methods to `Zousan` or include the others in your application bundle.
 
-**2019 Update:** As of version 3.0.0 we no longer define Zousan at the global level by default. (The exception being if you import the UMD version via `script` element without AMD present.)
+Since version 3.0.0, Zousan does not define a global by default. Loading the UMD build directly with a `script` element still creates a global when AMD is unavailable.
 
-## Usage
+## Installation and usage
 
 Zousan is distributed with an ES Module source entry for modern bundlers and a minified UMD/CommonJS bundle for CommonJS consumers.
 
-Zousan is [Promise A+ 1.1](https://promisesaplus.com/) compliant, so  any documentation for spec-compliant promises applies to Zousan. There are a couple small additions though - see below.  Briefly, the spec-compliant API is:
+```shell
+npm install zousan
+```
+
+```javascript
+import Zousan from "zousan"
+```
+
+```javascript
+const Zousan = require("zousan")
+```
+
+## Promise API
+
+Zousan passes the [Promises/A+ 1.1](https://promisesaplus.com/) conformance suite. Promises/A+ specifies the behavior of `then()` and the promise resolution procedure. The broader [`Promise` API is defined by ECMAScript](https://tc39.es/ecma262/multipage/control-abstraction-objects.html#sec-promise-objects).
+
+Zousan implements the standard Promise methods documented below. It deliberately implements only this subset; methods such as `Promise.race()` are not included.
 
 ### Constructor
 
-Create a new Promise (often, this promise is returned from a function that provides some asynchronous resource)
+The constructor receives an executor function. The executor gets functions that resolve or reject the new promise.
 
 ```javascript
-	var promise = new Zousan(function(resolve, reject) {
-		// ... perform some asynchronous operation ...
-		//  load the value to return into "value"
-		if(success)
-			resolve(value)
+const promise = new Zousan(function(resolve,reject) {
+	loadValue(function(error,value) {
+		if(error)
+			reject(error)
 		else
-			reject(Error("error message goes here"))
-	});
+			resolve(value)
+	})
+})
 ```
 
-----------
+### then(onFulfilled, onRejected)
 
-### then()
-
-To use this promise to obtain the value:
+`then()` registers fulfillment and rejection handlers and returns a new Zousan, so calls can be chained.
 
 ```javascript
-	promise.then(function(value) { // this function is called when promise is resolved
-			// do something with your value, you deserve it!
-
-		}, function(err) { // this function is called when promise is rejected
-		// bummer...
-
-	})
+promise.then(
+	value => display(value),
+	error => reportError(error)
+)
 ```
-
---------
-
-## Extensions
-
-Zousan does have a couple additional features which are not required by the spec, but are very useful when working with promises. Be aware that if you use this "extension" API, your code may not be compatible with other Promise implementations:
 
 ### catch(onRejected)
 
-```catch(onRejected)``` is equivalent to ```then(undefined, onRejected)``` and is just easier to identify - allowing you to adopt the pattern of always ending *then chains* with a catch, like so:
+`catch(onRejected)` is the standard shorthand for `then(undefined,onRejected)`.
 
 ```javascript
-	getJSON("data.json") 		// hypothetical function which returns a promise
-		.then(lookupItems) 		//   takes the data and obtains extra data about items
-		.then(updateCount)		//   update item count using host service
-		.then(displayResults)	//   update user view of results
-		.catch(reportErr)		// Catch any errors occurring in any steps above.
+getJSON("data.json")
+	.then(lookupItems)
+	.then(updateCount)
+	.then(displayResults)
+	.catch(reportError)
 ```
 
-This pattern helps you to remember to always catch any errors produced within your promise chains. Although this isn't part of the Promise A+, it is a very common addition and is present in the [ECMAScript 2015 Language Specification](https://262.ecma-international.org/6.0/#sec-promise.prototype.catch).
+### finally(onFinally)
 
--------------
-
-### finally(fn)
-
-```finally(fn)``` is a convenience method for handling both resolved and rejected promises with a single handler. More important than being "convenient" is it is clear in intent - that this function will be run regardless. It is useful in promise chains that require some kind of clean-up operation such as releasing resources:
+`finally()` runs its handler after the promise settles. The original fulfillment value or rejection reason passes through unless the handler throws or returns a rejected promise.
 
 ```javascript
-	getJSON("data.json") 		// hypothetical function which returns a promise
-		.then(lookupItems) 		//   takes the data and obtains extra data about items
-		.then(updateCount)		//   update item count using host service
-		.then(displayResults)	//   update user view of results
-		.catch(reportErr)		// Catch any errors occurring in any steps above
-		.finally(cleanup)		// Release resources, stop spinner, etc.
+getJSON("data.json")
+	.then(displayResults)
+	.catch(reportError)
+	.finally(cleanup)
 ```
 
-This method follows native `Promise.prototype.finally()` behavior: the original fulfillment value or rejection reason is preserved unless the `finally` handler throws or returns a rejected promise.
+### Zousan.resolve(value) and Zousan.reject(reason)
 
--------------
-
-### all(promiseArray)
-
-The other addition is a utility function called ```all()``` which takes an array of promises and returns a single promise that will resolve when all promises in the array resolve. The value passed to you is an array with the values from each promise respectively. If any promise within the passed array rejects, this will reject with the same error as the original rejection.
-
-**Note:** The array can contain non-promises as well. They will be passed through to the resolved array as-is.
-
-It is available by calling ```Zousan.all()``` (i.e. does not require a promise instance).
-
-For example, to obtain data from a list of sources:
+These standard static methods create a Zousan resolved with a value or rejected with a reason.
 
 ```javascript
-	// define an array with our data locations
-	var sources = ["data1.json", "data2.json", "data3.json"]
-
-	// Next, obtain an array of promises using hypothetical getJSON function
-	var dataProm = sources.map(getJSON)
-
-	// When all promises resolve, we call processData with array of results
-	Zousan.all(dataProm).then(processData, reportError)
+const valuePromise = Zousan.resolve(100)
+const failedPromise = Zousan.reject(Error("Unable to load value"))
 ```
 
-This function is also present in the [ECMAScript 2015 spec](https://262.ecma-international.org/6.0/#sec-promise.all).
+### Zousan.all(values)
 
--------------
+`Zousan.all()` accepts an array containing promises, thenables, or direct values. It preserves their order and resolves after every item resolves. If an item rejects, the returned Zousan rejects with the same reason.
 
-### timeout(ms[,msg])
-
-This method returns a new promise based on the original that times out (rejects with `Error("Timeout")` or if specified `Error(msg)`) if the original promise does not resolve or reject before the time specified (in milliseconds).
+Native `Promise.all()` accepts any iterable. To keep the implementation small, `Zousan.all()` accepts arrays.
 
 ```javascript
-	// Create a new promise that times out after 3 seconds
-	var prom = new Zousan().timeout(3000)
-	prom.then(doit,problem)
+const sources = ["data1.json", "data2.json", "data3.json"]
+const dataPromises = sources.map(getJSON)
+
+Zousan.all(dataPromises).then(processData,reportError)
 ```
 
-**Note:** This has no effect on the original promise - which may still resolve/reject at a later time. This pattern allows you to create a timeout promise against any existing promise, such as one returned from an API, without disturbing the original promise:
+## Zousan-specific API
+
+These additions are not part of the standard Promise API. Code that uses them depends specifically on Zousan.
+
+### timeout(ms[, message])
+
+`timeout()` returns a new Zousan that rejects if the original promise has not settled within the specified number of milliseconds. The default error is `Error("Timeout")`; pass a message to replace it.
 
 ```javascript
-	// Use the getData() function but only wait for a maximum of 2 seconds
-	getData(url).timeout(2000).then(process, error)
+getData(url)
+	.timeout(2000,"Data request timed out")
+	.then(processData,reportError)
 ```
 
-**Note 2:** Be careful of promise chains containing multiple timeouts. To trigger handlers at multiple timeout points, use separate statements, like this:
+The timeout does not cancel or modify the original promise. It may still settle later. If several parts of an application need different timeouts for the same operation, create separate chains from the original promise.
 
 ```javascript
-	var data = getData(url)
-		.timeout(10000)	// wait a maximum of 10 seconds for the data to return
-		.then(process, error)
+const data = getData(url)
 
-	data.timeout(1000)	// after one second, display a progress bar
-		.catch(displayProgressBar)
+data.timeout(1000).catch(displayProgressBar)
+data.timeout(3000).catch(displayCancelButton)
 
-	data.timeout(3000)	// after 3 seconds, display a cancel button
-		.catch(displayCancelButton)
-
+data.timeout(10000).then(processData,reportError)
 ```
 
----------
+### Instance resolve(value) and reject(reason)
 
-### Convenience resolve() / reject() as Instance Methods
-
-The spec-compliant manner of resolving/rejecting a promise is to call the methods handed back to the constructor function argument, as shown in the constructor example above. Often it is more convenient (or cleaner) to resolve/reject a promise outside the constructor. For this purpose, Zousan provides resolve and reject methods right on the promise instance. So this pattern is available:
+Native promises can only be settled through the functions passed to their executor. Zousan also lets you create an unsettled instance and resolve or reject it later.
 
 ```javascript
-	var promise = new Zousan()
-	if(success)
-		promise.resolve(value)
-	else
-		promise.reject(Error("error message goes here"))
+const promise = new Zousan()
+
+if(success)
+	promise.resolve(value)
+else
+	promise.reject(Error("Unable to load value"))
 ```
 
------------
+### Rejection warnings
 
-### Convenience utility method to create Resolved or Rejected Promises
-
-These functions create new promises and resolve or reject them with values or errors all in one convenient step.
-
-**Note:** This differs from the above resolve/reject instance methods in that these are functions which create *new* promises in a resolved or rejected state, whereas the instance methods of the same names above resolve or reject a previously existing promise (hence, those are instance methods while these are not)
-
-To create a promise and *resolve* or *reject* it immediately:
+Zousan warns through `Zousan.warn` when a rejection has no handler. It uses `console.warn` by default.
 
 ```javascript
-	// Create a promise and resolve it immediately with the value 100
-	var resolvedPromise = Zousan.resolve(100)
-
-	// --- Note: The above is equivalent to the following: ---
-	var resolvedPromise2 = new Zousan()
-	resolvedPromise2.resolve(100)
-
-	// --- or, the following ---
-	var resolvedPromise3 = new Zousan(function(res,rej) {
-			res(100)
-		});
-
-	// Create a promise and reject it immediately with the stated error
-	var rejectedPromise = Zousan.reject(Error("Security Error"))
+Zousan.warn = function(...args) {
+	logger.warn(...args)
+}
 ```
 
------------
-
-### Uncaught Rejections Warning
-
-By default, Zousan will log a warning message to the console if a promise is rejected and that rejection is not "caught". Generally, it is best to use the ```catch()``` pattern shown above, which will ensure all rejections are handled. If you forget, you will upset Zousan, and he will remind you.
-
-Zousan assigns `Zousan.warn` to `console.warn` and uses that to log the uncaught rejection message. You may use an alternate handler for these warnings by assigning `Zousan.warn` to the function of your choice.
-
-If you wish to suppress this warning, you can turn it off globally via:
+Set `Zousan.suppressUncaughtRejectionError` to suppress these warnings globally, or set an individual promise's `handled` property to `true`.
 
 ```javascript
-	Zousan.warn = function() { }
+Zousan.suppressUncaughtRejectionError = true
+
+const promise = new Zousan()
+promise.handled = true
 ```
 
-You may also suppress the warning for a specific promise by setting the promise's `handled` property to `true`:
+### Zousan.soon(fn)
+
+`Zousan.soon()` queues a callback to run asynchronously with as little delay as the environment permits. Errors thrown by queued callbacks are passed to `Zousan.error`, which uses `console.error` by default.
 
 ```javascript
-	const p = new Zousan()
-	p.handled = true // don't warn when we reject this
-	p.reject(123)
+Zousan.soon(runAfterCurrentCode)
+```
+
+Repeated `soon()` calls can starve a browser's rendering and input loop, so it is best suited to short pieces of promise-related work.
+
+## Async workflow utilities
+
+The workflow utilities are independent modules. Import only what the application uses:
+
+| Entry point | Exports |
+| --- | --- |
+| `zousan/evaluate` | `evaluate`, `evaluateResults` |
+| `zousan/series` | `series` |
+
+These entrypoints replace the corresponding `zousan-plus` utilities in new code. They do not add methods to the `Zousan` class.
+
+### evaluate(...workflow)
+
+`evaluate()` describes an asynchronous workflow as named values and dependencies. Independent work starts together. A dependent function runs after its dependencies resolve and receives their values as arguments. Pass the workflow as separate arguments or as one array.
+
+```javascript
+import { evaluate } from "zousan/evaluate"
+
+const orderTotal = await evaluate(
+	{ name: "customer", value: loadCustomer, deps: [customerId] },
+	{ name: "cart", value: loadCart, deps: [cartId] },
+	{
+		name: "discount",
+		value: findApplicableDiscount,
+		deps: ["customer", "cart"]
+	},
+	{
+		value: calculateOrderTotal,
+		deps: ["cart", "discount"]
+	}
+)
+
+displayTotal(orderTotal)
+```
+
+`customerId` and `cartId` pass directly to their functions. The strings `"customer"` and `"cart"` refer to earlier named results. The unnamed final item receives the cart and resolved discount, then returns the order total.
+
+Each workflow item has these properties:
+
+- `name` identifies a value so later items can depend on it. Every item except the final one must have a name; the final name is optional.
+- `value` can be a direct value, a promise, or a function.
+- `deps` lists values for the function. A string matching an earlier item's name refers to that result. Other values pass through unchanged.
+
+Names must be unique, and items must appear before other items that depend on them. `evaluate()` waits for the entire workflow, then resolves with the final item's value. An empty workflow resolves with `undefined`.
+
+### evaluateResults(...workflow)
+
+`evaluateResults()` runs the same kind of workflow but resolves with every named value. Because each value becomes a property in the returned object, every item must have a unique name. An empty workflow resolves with an empty object.
+
+```javascript
+import { evaluateResults } from "zousan/evaluate"
+
+const results = await evaluateResults(
+	{ name: "user", value: loadUser, deps: [42] },
+	{ name: "settings", value: loadSettings, deps: [42] },
+	{
+		name: "viewModel",
+		value: buildViewModel,
+		deps: ["user", "settings"]
+	}
+)
+
+display(results.viewModel)
+```
+
+### series(...items)
+
+`series()` processes values, promises, and functions in order. Each function receives the preceding result. It resolves with the last value, or `undefined` when called without items.
+
+```javascript
+import { series } from "zousan/series"
+
+const savedOrder = await series(draftOrder,validateOrder,saveOrder)
 ```
 
 ## FAQ
 
 **Q: What does "Zousan" mean?**
 
-Well, if you had a 3-year-old Japanese child, you would know, now wouldn't you!?  "Zou" is the Japanese word for "Elephant". "San" is an honorific suffix placed after someone's name or title to show respect. Children (and other kawaii people) often put "san" after animal names as a sign of respect to the animals.. and just to be kawaii.
+Well, if you had a 3-year-old Japanese child, you would know, now wouldn't you!? "Zou" is the Japanese word for "elephant." "San" is an honorific suffix placed after someone's name or title to show respect. Children, and other kawaii people, often put "san" after animal names as a sign of respect for the animals, and just to be kawaii.
 
 [Here is a video that might help](https://www.youtube.com/watch?v=rEsNUJp9dcM)
 
@@ -234,27 +273,16 @@ Because elephants never forget. So you can depend on them to keep their promises
 
 **Q: Why did you write another Promise implementation?**
 
-I briefly explained why at the top of this README - but for a more detailed explanation, check out my [blog post on the subject.](http://www.bluejava.com/4Nc/A-Promising-Start---Embracing-Speed-and-Elegance-with-Zousan-Promises)
+I briefly explained why at the top of this README. For the longer version, see my [blog post on the subject](https://www.bluejava.com/4Nc/A-Promising-Start---Embracing-Speed-and-Elegance-with-Zousan-Promises).
 
 **Q: How did you make it run so fast?**
 
-I discuss that a bit on my [Zousan blog post](http://www.bluejava.com/4Nc/A-Promising-Start---Embracing-Speed-and-Elegance-with-Zousan-Promises) as well.
+I discuss that in my [Zousan blog post](https://www.bluejava.com/4Nc/A-Promising-Start---Embracing-Speed-and-Elegance-with-Zousan-Promises).
 
 **Q: Just how fast is it?**
 
-I set up a [jsperf comparison](http://jsperf.com/promise-speed-comparison/7) between:
+The [original jsperf comparison](https://jsperf.app/promise-speed-comparison/7) measured Zousan against Bluebird, When, PinkySwear, Covenant, and native promises. It is a historical benchmark from the project's early years. JavaScript engines and the compared libraries have changed considerably, so rerun it in the environments that matter to your application before drawing current performance conclusions.
 
-* [Zousan](https://github.com/bluejava/zousan) (2,160 bytes minified)
-* [Bluebird](https://github.com/petkaantonov/bluebird) (72,282 bytes minified) - Considered the king of high-performance Promises
-* [When](https://github.com/cujojs/when) (12,474 bytes minified) - Long established and high performance Promise shim
-* [PinkySwear](https://github.com/timjansen/PinkySwear.js) (842 bytes minified) - The smallest compliant Promise implementation I've come across
-* [covenant](https://github.com/wizardwerdna/covenant) (3,335 bytes) - A Promise implementation written in CoffeeScript
-* Native Promises - Built into all recent browsers *except IE*.
-
-**Note: Graph illustrates *operations per second*, so longer bars are better.**
-
-![](http://www.bluejava.com/int/images/Zousan-Performance-20150617.png)
-
-### License
+## License
 
 See the LICENSE file for license rights and limitations (MIT).
